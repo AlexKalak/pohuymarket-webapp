@@ -1,0 +1,16 @@
+query GetOrdersMatches($fromHead: Boolean, $where: OrdersMatchWhere, $first: Int!, $skip: Int!) {
+  ordersMatches(fromHead: $fromHead, where: $where, first: $first, skip: $skip) { 
+    blockNumber
+    id
+    logIndex
+    makerAmountFilled
+    makerAssetId
+    sharePrice
+    takerAmountFilled
+    takerOrderHash
+    takerAssetId
+    takerOrderMaker
+    timestamp
+    transactionHash
+  }
+}
