@@ -1,5 +1,6 @@
 import { useGetEventBySlug } from "@/src/common/api/events/hooks/useEventBySlugQuery"
-import MarketChart from "@/src/common/components/market/MarketChart"
+import { useBidAskUpdateSubscription } from "@/src/common/api/market/hooks/useBestBidAskUpdatesSubscription"
+import MarketTradesChart from "@/src/common/components/market/MarketTradesChart"
 
 const Event = ({ slug }: { slug: string }) => {
   const { event, isLoading, error } = useGetEventBySlug({ slug })
@@ -14,7 +15,7 @@ const Event = ({ slug }: { slug: string }) => {
     <div>
       {
         event.markets.map(market => (
-          <MarketChart key={market.id} market={market} />
+          <MarketTradesChart key={market.id} market={market} />
         ))
       }
 

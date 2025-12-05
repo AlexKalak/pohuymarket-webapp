@@ -1,0 +1,15 @@
+subscription BidAskUpdate($marketIdentificator: String!) {
+  bidAskUpdate(marketIdentificator: $marketIdentificator) {
+    bestAskUpdate {
+      price
+      size
+    }
+    bestBidUpdate {
+      price
+      size
+    }
+    marketIdentificator
+    marketType
+    timestamp
+  }
+}

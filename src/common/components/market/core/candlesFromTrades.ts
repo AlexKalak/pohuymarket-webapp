@@ -1,5 +1,12 @@
 import { CandleModel } from "@/src/entities/candle/candle";
 import { TradeModel } from "@/src/entities/trade/ordersMatchModel";
+import { type Point } from "../../chart/LineSeriesChart";
+import { BidAskUpdateModel } from "@/src/entities/trade/bidAskUpdate";
+
+export type PointsAndLastPoint = {
+  points: Point[]
+  lastPoint: Point | null
+}
 
 //trades should go in ascending order
 export const tradesToCandles = (newTrades: TradeModel[], timeSpacing: number): { candles: CandleModel[], updatingCandle: CandleModel | null } => {
@@ -100,3 +107,53 @@ export const tradesToCandlesStupid = (newTrades: TradeModel[], timeSpacing: numb
   return { candles, updatingCandle }
 }
 
+export const pointsFromBidAskUpdates = (bidAskUpdates: BidAskUpdateModel[]): { bid: PointsAndLastPoint, ask: PointsAndLastPoint } => {
+  if (!bidAskUpdates) return {
+    bid: { points: [], lastPoint: null },
+    ask: { points: [], lastPoint: null }
+  }
+
+  const bidPoints: Point[] = []
+  const askPoints: Point[] = []
+  let lastBidPoint: Point | null = null
+  let lastAskPoint: Point | null = null
+
+  for (let i = 0; i < bidAskUpdates.length; i++) {
+    const bidAskUpdate = bidAskUpdates[i]
+
+    if (bidAskUpdate?.bestBidUpdate?.price) {
+      const point: Point = {
+        time: Math.floor(bidAskUpdate.timestamp / 1000),
+        value: bidAskUpdate.bestBidUpdate.price
+      }
+      if (point.time > (lastBidPoint?.time ?? 0)) {
+        lastBidPoint = point
+        bidPoints.push(point)
+      }
+    }
+
+    if (bidAskUpdate?.bestAskUpdate?.price) {
+      const point: Point = {
+        time: Math.floor(bidAskUpdate.timestamp / 1000),
+        value: bidAskUpdate.bestAskUpdate.price
+      }
+      if (point.time > (lastAskPoint?.time ?? 0)) {
+        lastAskPoint = point
+        askPoints.push(point)
+      }
+    }
+
+  }
+
+  return {
+    bid: {
+      points: bidPoints,
+      lastPoint: lastBidPoint
+    },
+    ask: {
+      points: askPoints,
+      lastPoint: lastAskPoint
+    }
+  }
+
+}
