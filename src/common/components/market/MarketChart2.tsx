@@ -27,7 +27,7 @@ const MarketChart2 = ({ marketID, market2ID }: MarketChartProps) => {
       return bidAskPoints
     }, [bidAskUpdates2])
 
-  return <div className="flex gap-10 mx-10 my-10">
+  return <div className="flex flex-col items-center gap-10 mx-10 my-10">
     <div>{marketID}</div>
     <div className="w-full border border-white rounded-xl overflow-hidden">
       <LineChart

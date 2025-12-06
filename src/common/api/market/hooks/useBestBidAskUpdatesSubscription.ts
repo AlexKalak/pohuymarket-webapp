@@ -40,10 +40,10 @@ export const useBidAskUpdateSubscription = (marketIdentificator: string): {
       }
 
       setLiveBidAskUpdates((prev) => {
-        let newBidAsks = [...prev, bidAskUpdate]
+        const newBidAsks = [...prev, bidAskUpdate]
 
-        const leftIndex = Math.max(newBidAsks.length - 100, 0)
-        newBidAsks = newBidAsks.slice(leftIndex)
+        // const leftIndex = Math.max(newBidAsks.length - 100, 0)
+        // newBidAsks = newBidAsks.slice(leftIndex)
 
         return newBidAsks
       })
