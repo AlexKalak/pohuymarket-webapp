@@ -1,0 +1,40 @@
+query ArbitragePairs($first: Int, $skip: Int, $where: ArbitragePairWhere) {
+  arbitragePairs(first: $first, skip: $skip, where: $where) {
+    createdAt
+    id
+    kalshiMarket {
+      ticker
+      closeTime
+      closed
+      createdTime
+      event_ticker
+      marketType
+      subtitle
+      title
+      type
+    }
+    kalshiMarketTicker
+    polymarketMarket {
+      id
+      icon
+      event_id
+      endDate
+      conditionId
+      closed
+      active
+      image
+      negRisk
+      negRiskMarketID
+      negRiskRequestID
+      noAssetId
+      question
+      slug
+      startDate
+      type
+      yesAssetId
+    }
+    polymarketMarketID
+    updatedAt
+  }
+}
+

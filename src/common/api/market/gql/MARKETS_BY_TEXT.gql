@@ -1,0 +1,39 @@
+query MarketsByText($first: Int!, $skip: Int!,$text: String!) {
+  marketsByText(text: $text, first: $first, skip: $skip) {
+    kalshi {
+      closeTime
+      closed
+      createdTime
+      event {
+        ticker
+      }
+      event_ticker
+      marketType
+      ticker
+      title
+      type
+    }
+    polymarket {
+      active
+      closed
+      conditionId
+      endDate
+      event {
+        slug
+      }
+      event_id
+      icon
+      id
+      image
+      negRisk
+      negRiskMarketID
+      negRiskRequestID
+      noAssetId
+      question
+      slug
+      startDate
+      yesAssetId
+      type
+    }
+  }
+}

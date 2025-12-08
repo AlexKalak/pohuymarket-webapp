@@ -3,7 +3,7 @@ import { CandleModel } from "@/src/entities/candle/candle"
 import { useMemo, useState } from "react"
 import { useTradesQuery } from "@/src/common/api/market/hooks/getOrdersMatchesForMarketQuery"
 import { tradesToCandles, tradesToCandlesStupid } from "@/src/common/components/market/core/candlesFromTrades"
-import { MarketModel } from "@/src/entities/market/market"
+import { MarketModel } from "@/src/entities/market/kalshiMarket"
 
 type MarketChartProps = {
   market: MarketModel

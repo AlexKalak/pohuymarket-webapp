@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import Providers from "./provides";
+import ArbitragePairCreator from "@/src/features/arbitragePairs/ui/ArbitragePairCreator";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -26,10 +27,12 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
+        className={`${geistSans.variable} ${geistMono.variable} antialiased relative overflow-hidden`}
+        style={{ minHeight: "100vh" }}
       >
         <Providers>
           {children}
+          <ArbitragePairCreator />
         </Providers>
       </body>
     </html>

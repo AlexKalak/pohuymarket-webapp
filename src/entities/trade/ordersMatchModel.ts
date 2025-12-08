@@ -39,23 +39,62 @@ export class TradeModel {
 
 
   constructor(ordersMatchData: OrdersMatchData) {
-    if (
-      !ordersMatchData.id ||
-      !ordersMatchData.transactionHash ||
-      !ordersMatchData.logIndex ||
-      !ordersMatchData.blockNumber ||
-      !ordersMatchData.timestamp ||
-      !ordersMatchData.takerOrderMaker ||
-      !ordersMatchData.makerAssetId ||
-      !ordersMatchData.takerAssetId ||
-      !ordersMatchData.takerOrderHash ||
-      !ordersMatchData.makerAmountFilled ||
-      !BigInt(ordersMatchData.makerAmountFilled) ||
-      !ordersMatchData.takerAmountFilled ||
-      !BigInt(ordersMatchData.takerAmountFilled) ||
-      !ordersMatchData.sharePrice
-    ) {
-      throw new Error("Unable to construct TradeModel from OrdersMatchData provided")
+    if (ordersMatchData.id == null) {
+      throw new Error("TradeModel requires field: id");
+    }
+
+    if (!ordersMatchData.transactionHash) {
+      throw new Error("TradeModel requires field: transactionHash");
+    }
+
+    if (ordersMatchData.logIndex == null) {
+      throw new Error("TradeModel requires field: logIndex");
+    }
+
+    if (ordersMatchData.blockNumber == null) {
+      throw new Error("TradeModel requires field: blockNumber");
+    }
+
+    if (!ordersMatchData.timestamp) {
+      throw new Error("TradeModel requires field: timestamp");
+    }
+
+    if (!ordersMatchData.takerOrderMaker) {
+      throw new Error("TradeModel requires field: takerOrderMaker");
+    }
+
+    if (!ordersMatchData.makerAssetId) {
+      throw new Error("TradeModel requires field: makerAssetId");
+    }
+
+    if (!ordersMatchData.takerAssetId) {
+      throw new Error("TradeModel requires field: takerAssetId");
+    }
+
+    if (!ordersMatchData.takerOrderHash) {
+      throw new Error("TradeModel requires field: takerOrderHash");
+    }
+
+    if (ordersMatchData.makerAmountFilled == null) {
+      throw new Error("TradeModel requires field: makerAmountFilled");
+    }
+    try {
+      BigInt(ordersMatchData.makerAmountFilled);
+    } catch {
+      throw new Error("TradeModel: makerAmountFilled must be a valid bigint");
+    }
+
+    if (ordersMatchData.takerAmountFilled == null) {
+      throw new Error("TradeModel requires field: takerAmountFilled");
+    }
+    try {
+      BigInt(ordersMatchData.takerAmountFilled);
+    } catch {
+      throw new Error("TradeModel: takerAmountFilled must be a valid bigint");
+    }
+
+    if (ordersMatchData.sharePrice == null) {
+      throw new Error("TradeModel requires field: sharePrice");
     }
 
     this.transactionHash = ordersMatchData.transactionHash

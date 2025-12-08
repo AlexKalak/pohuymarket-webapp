@@ -1,0 +1,39 @@
+query Markets($first: Int!, $skip: Int!,$where: MarketWhere) {
+  markets(where: $where, first: $first, skip: $skip) {
+    ... on KalshiMarket {
+      closeTime
+      closed
+      createdTime
+      event {
+        ticker
+      }
+      event_ticker
+      marketType
+      ticker
+      title
+      type
+    }
+    ... on PolymarketMarket {
+      active
+      closed
+      conditionId
+      endDate
+      event {
+        slug
+      }
+      event_id
+      icon
+      id
+      image
+      negRisk
+      negRiskMarketID
+      negRiskRequestID
+      noAssetId
+      question
+      slug
+      startDate
+      yesAssetId
+      type
+    }
+  }
+}

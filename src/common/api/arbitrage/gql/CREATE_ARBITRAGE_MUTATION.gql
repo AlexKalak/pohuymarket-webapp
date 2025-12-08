@@ -1,0 +1,39 @@
+mutation Mutation($pairs: [CreateArbitragePairInput!]) {
+  createArbitragePairs(pairs: $pairs) {
+    createdAt
+    id
+    kalshiMarket {
+      createdTime
+      closed
+      closeTime
+      event_ticker
+      marketType
+      subtitle
+      ticker
+      title
+      type
+    }
+    kalshiMarketTicker
+    polymarketMarket {
+      id
+      closed
+      active
+      conditionId
+      endDate
+      event_id
+      icon
+      image
+      negRisk
+      negRiskMarketID
+      negRiskRequestID
+      noAssetId
+      question
+      slug
+      startDate
+      type
+      yesAssetId
+    }
+    polymarketMarketID
+    updatedAt
+  }
+}
