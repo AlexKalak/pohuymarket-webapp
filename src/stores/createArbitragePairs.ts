@@ -15,19 +15,11 @@ export const useCreateAritragePairState = create<CreateArbitragePairState>((set)
   polymarketMarket: null,
   kalshiMarket: null,
 
-  setPolymarketMarket: (market) => set(
-    () => {
-      return {
-        polymarketMarket: market,
-      }
-    }
-  ),
+  setPolymarketMarket: (market) => set(() => ({
+    polymarketMarket: market,
+  })),
 
-  setKalshiMarket: (market) => set(
-    () => {
-      return {
-        kalshiMarket: market,
-      }
-    }
-  ),
+  setKalshiMarket: (market) => set(() => ({
+    kalshiMarket: market,
+  })),
 }))

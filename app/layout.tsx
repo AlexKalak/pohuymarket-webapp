@@ -27,7 +27,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased relative overflow-hidden`}
+        className={`${geistSans.variable} ${geistMono.variable} antialiased relative`}
         style={{ minHeight: "100vh" }}
       >
         <Providers>

@@ -6,13 +6,15 @@ import { useEffect } from "react"
 const ArbitragePairCreator = () => {
   const polymarketMarket = useCreateAritragePairState(s => s.polymarketMarket)
   const kalshiMarket = useCreateAritragePairState(s => s.kalshiMarket)
+
   const setPolymarketMarket = useCreateAritragePairState(s => s.setPolymarketMarket)
   const setKalshiMarket = useCreateAritragePairState(s => s.setKalshiMarket)
+
   const deletePolymarketMarket = () => setPolymarketMarket(null)
   const deleteKalshiMarket = () => setKalshiMarket(null)
 
   const [createArbitragePair, { pairs, isLoading, error }] = useCreateArbitragePairsMutation()
-
+  console.log(pairs)
 
   useEffect(() => {
     if (error) {
@@ -21,12 +23,12 @@ const ArbitragePairCreator = () => {
   }, [error, setKalshiMarket, setPolymarketMarket])
 
   useEffect(() => {
+    console.log("falksdjfl")
     if (pairs) {
-      console.log(pairs)
       setPolymarketMarket(null)
       setKalshiMarket(null)
     }
-  }, [error, pairs, setKalshiMarket, setPolymarketMarket])
+  }, [pairs])
 
   const handleButtonClick = () => {
     if (!polymarketMarket || !kalshiMarket) {
@@ -52,7 +54,7 @@ const ArbitragePairCreator = () => {
   }
 
   return (
-    <div className="absolute border border-white rounded-xl py-5 px-10 mx-auto mb-2"
+    <div className="fixed bg-black border border-white h-fit rounded-xl py-5 px-10 mx-auto mb-2"
       style={{
         width: "90%",
         left: 0,

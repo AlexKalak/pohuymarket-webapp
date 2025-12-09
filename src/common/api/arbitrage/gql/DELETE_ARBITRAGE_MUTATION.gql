@@ -1,0 +1,5 @@
+mutation DeleteArbitrages($ids: [Int!]) {
+  deleteArbitragePairs(ids: $ids) {
+    ok
+  }
+}

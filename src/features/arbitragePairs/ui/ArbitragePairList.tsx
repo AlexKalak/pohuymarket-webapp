@@ -8,8 +8,8 @@ const ArbitragePairList = () => {
   console.log("PAIRS: ", pairs)
 
   return (
-    <div>
-      <div className="text-center text-2xl mb-3">Existing arb pairs</div>
+    <div className="flex flex-col items-center gap-6 pb-10 ">
+      <div className="text-center text-2xl">Existing arb pairs</div>
       {pairs &&
         pairs.map(pair => <ArbitragePair key={pair.id} pair={pair} />)}
     </div>
