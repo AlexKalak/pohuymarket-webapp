@@ -107,7 +107,7 @@ export const tradesToCandlesStupid = (newTrades: TradeModel[], timeSpacing: numb
   return { candles, updatingCandle }
 }
 
-export const pointsFromBidAskUpdates = (bidAskUpdates: BidAskUpdateModel[]): { bid: PointsAndLastPoint, ask: PointsAndLastPoint } => {
+export const pointsFromBidAskUpdates = (bidAskUpdates: BidAskUpdateModel[], reverted: boolean): { bid: PointsAndLastPoint, ask: PointsAndLastPoint } => {
   if (!bidAskUpdates) return {
     bid: { points: [], lastPoint: null },
     ask: { points: [], lastPoint: null }
@@ -115,32 +115,64 @@ export const pointsFromBidAskUpdates = (bidAskUpdates: BidAskUpdateModel[]): { b
 
   const bidPoints: Point[] = []
   const askPoints: Point[] = []
+
   let lastBidPoint: Point | null = null
   let lastAskPoint: Point | null = null
 
-  for (let i = 0; i < bidAskUpdates.length; i++) {
-    const bidAskUpdate = bidAskUpdates[i]
+  if (reverted) {
+    for (let i = 0; i < bidAskUpdates.length; i++) {
+      const bidAskUpdate = bidAskUpdates[i]
 
-    if (bidAskUpdate?.bestBidUpdate?.price) {
-      const point: Point = {
-        time: Math.floor(bidAskUpdate.timestamp / 1000),
-        value: bidAskUpdate.bestBidUpdate.price
+      if (bidAskUpdate?.bestAskUpdate?.price) {
+        const point: Point = {
+          time: Math.floor(bidAskUpdate.timestamp / 1000),
+          value: (1_000_000 - bidAskUpdate.bestAskUpdate.price) / 1_000_000
+        }
+        if (point.time > (lastBidPoint?.time ?? 0)) {
+          lastBidPoint = point
+          bidPoints.push(point)
+        }
       }
-      if (point.time > (lastBidPoint?.time ?? 0)) {
-        lastBidPoint = point
-        bidPoints.push(point)
+
+      if (bidAskUpdate?.bestBidUpdate?.price) {
+        const point: Point = {
+          time: Math.floor(bidAskUpdate.timestamp / 1000),
+          value: (1_000_000 - bidAskUpdate.bestBidUpdate.price) / 1_000_000
+        }
+        if (point.time > (lastAskPoint?.time ?? 0)) {
+          lastAskPoint = point
+          askPoints.push(point)
+        }
       }
+
     }
 
-    if (bidAskUpdate?.bestAskUpdate?.price) {
-      const point: Point = {
-        time: Math.floor(bidAskUpdate.timestamp / 1000),
-        value: bidAskUpdate.bestAskUpdate.price
+  } else {
+    for (let i = 0; i < bidAskUpdates.length; i++) {
+      const bidAskUpdate = bidAskUpdates[i]
+
+      if (bidAskUpdate?.bestBidUpdate?.price) {
+        const point: Point = {
+          time: Math.floor(bidAskUpdate.timestamp / 1000),
+          value: bidAskUpdate.bestBidUpdate.price / 1_000_000
+        }
+        if (point.time > (lastBidPoint?.time ?? 0)) {
+          lastBidPoint = point
+          bidPoints.push(point)
+        }
       }
-      if (point.time > (lastAskPoint?.time ?? 0)) {
-        lastAskPoint = point
-        askPoints.push(point)
+
+      if (bidAskUpdate?.bestAskUpdate?.price) {
+        const point: Point = {
+          time: Math.floor(bidAskUpdate.timestamp / 1000),
+          value: bidAskUpdate.bestAskUpdate.price / 1_000_000
+        }
+        if (point.time > (lastAskPoint?.time ?? 0)) {
+          lastAskPoint = point
+          askPoints.push(point)
+        }
       }
+
     }
 
   }

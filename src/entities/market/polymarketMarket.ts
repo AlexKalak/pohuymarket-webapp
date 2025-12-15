@@ -58,6 +58,7 @@ export class PolymarketMarketModel implements IMarket {
   event?: PolymarketEventModel;
 
   constructor(data: PolymarketMarketData) {
+    console.log("type", data.type)
     const type = marketTypeFromString(data.type ?? "");
 
     if (!type) {
@@ -151,7 +152,7 @@ export class PolymarketMarketModel implements IMarket {
     return this.slug;
   }
   GetIdentificator(): string {
-    return this.id.toString();
+    return this.conditionId;
   }
   GetMarketType(): MarketType {
     return this.type;

@@ -1,5 +1,5 @@
 import { IEvent } from "../event/event.interface";
-import { KalshiEvent, KalshiEventData, KalshiEventModel } from "../event/kalshiEventModel";
+import { KalshiEventData, KalshiEventModel } from "../event/kalshiEventModel";
 import { IMarket, MarketType, marketTypeFromString, MarketWhere } from "./market.interface";
 
 
@@ -31,19 +31,27 @@ export type KalshiMarketData = {
 }
 
 export class KalshiMarketModel implements IMarket {
-  type: MarketType;
-  ticker: string;
-  event_ticker: string;
-  title: string;
-  subtitle: string;
-  createdTime: Date;
-  closeTime: Date;
-  marketType: string;
-  closed: boolean;
-
+  type!: MarketType;
+  ticker!: string;
+  event_ticker!: string;
+  title!: string;
+  subtitle!: string;
+  createdTime!: Date;
+  closeTime!: Date;
+  marketType!: string;
+  closed!: boolean;
+  yes_sub_title?: string;
+  no_sub_title?: string;
+  custom?: string;
+  expirationValue?: string;
+  status?: string;
   event?: KalshiEventModel;
 
-  constructor(data: KalshiMarketData) {
+  constructor(data?: KalshiMarketData) {
+    if (!data) {
+      return
+    }
+
     const type = marketTypeFromString(data?.type ?? "");
 
     if (!type) {
@@ -99,6 +107,12 @@ export class KalshiMarketModel implements IMarket {
   }
   GetQuestion(): string {
     return this.title;
+  }
+  GetSub(): string {
+    if (this.yes_sub_title || this.no_sub_title) {
+      return `${this.yes_sub_title} | ${this.no_sub_title}`;
+    }
+    return ""
   }
   GetTitle(): string {
     return this.title;

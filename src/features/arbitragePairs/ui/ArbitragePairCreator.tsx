@@ -1,7 +1,7 @@
 'use client'
 import { useCreateArbitragePairsMutation } from "@/src/common/api/arbitrage/hooks/useCreateArbitrageMutation"
 import { useCreateAritragePairState } from "@/src/stores/createArbitragePairs"
-import { useEffect } from "react"
+import { useEffect, useState } from "react"
 
 const ArbitragePairCreator = () => {
   const polymarketMarket = useCreateAritragePairState(s => s.polymarketMarket)
@@ -9,6 +9,8 @@ const ArbitragePairCreator = () => {
 
   const setPolymarketMarket = useCreateAritragePairState(s => s.setPolymarketMarket)
   const setKalshiMarket = useCreateAritragePairState(s => s.setKalshiMarket)
+  const [revertPolymarket, setRevertPolymarket] = useState<boolean>(false)
+  const [revertKalshi, setRevertKalshi] = useState<boolean>(false)
 
   const deletePolymarketMarket = () => setPolymarketMarket(null)
   const deleteKalshiMarket = () => setKalshiMarket(null)
@@ -23,7 +25,6 @@ const ArbitragePairCreator = () => {
   }, [error, setKalshiMarket, setPolymarketMarket])
 
   useEffect(() => {
-    console.log("falksdjfl")
     if (pairs) {
       setPolymarketMarket(null)
       setKalshiMarket(null)
@@ -40,6 +41,7 @@ const ArbitragePairCreator = () => {
         variables: {
           pairs: [
             {
+              revertPolymarket: revertPolymarket,
               polymarketMarketID: polymarketMarket.id,
               kalshiMarketTicker: kalshiMarket.ticker,
             }
@@ -66,6 +68,10 @@ const ArbitragePairCreator = () => {
         {polymarketMarket &&
           <div className="flex flex-col border border-white rounded-xl px-2 py-1">
             <div>Polymarket</div>
+            <div className="flex gap-1">
+              <span>Revert</span>
+              <input type="checkbox" onChange={() => setRevertPolymarket(prev => !prev)} checked={revertPolymarket} />
+            </div>
             <div>{polymarketMarket.id}</div>
             <div>{polymarketMarket.GetQuestion()}</div>
             <button onClick={deletePolymarketMarket} className="cursor-pointer bg-red-600">-</button>
@@ -74,6 +80,10 @@ const ArbitragePairCreator = () => {
         {kalshiMarket &&
           <div className="flex flex-col border border-white rounded-xl px-2 py-1">
             <div>Kalshi</div>
+            {/* <div className="flex gap-1"> */}
+            {/* <span>Revert</span> */}
+            {/* <input type="checkbox" onChange={() => setRevertKalshi(prev => !prev)} checked={revertKalshi} /> */}
+            {/* </div> */}
             <div>{kalshiMarket.ticker}</div>
             <div>{kalshiMarket.GetQuestion()}</div>
             <button onClick={deleteKalshiMarket} className="cursor-pointer bg-red-600">-</button>

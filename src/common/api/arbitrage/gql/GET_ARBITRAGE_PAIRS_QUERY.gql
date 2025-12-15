@@ -34,7 +34,9 @@ query ArbitragePairs($first: Int, $skip: Int, $where: ArbitragePairWhere) {
       yesAssetId
     }
     polymarketMarketID
+    revertPolymarket
     updatedAt
+    allowTrading
   }
 }
 

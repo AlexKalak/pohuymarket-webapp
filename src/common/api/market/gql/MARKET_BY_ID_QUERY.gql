@@ -1,0 +1,39 @@
+query MarketByID($identificator: String) {
+  marketByIdentificator(identificator: $identificator) {
+    ... on KalshiMarket {
+      closeTime
+      closed
+      createdTime
+      event {
+        ticker
+      }
+      event_ticker
+      marketType
+      ticker
+      title
+      type
+    }
+    ... on PolymarketMarket {
+      active
+      closed
+      conditionId
+      endDate
+      event {
+        slug
+      }
+      event_id
+      icon
+      id
+      image
+      negRisk
+      negRiskMarketID
+      negRiskRequestID
+      noAssetId
+      question
+      slug
+      startDate
+      yesAssetId
+      type
+    }
+  }
+}

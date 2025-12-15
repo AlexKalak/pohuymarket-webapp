@@ -1,0 +1,5 @@
+mutation SetAllowTrading($id: Int!, $allow: Boolean!) {
+  setAllowTrading(id: $id, allow: $allow){
+    ok
+  }
+}

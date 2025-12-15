@@ -11,6 +11,7 @@ type CreateArbitrageMutationResponse = {
 type CreateArbitragePairData = {
   polymarketMarketID: number,
   kalshiMarketTicker: string,
+  revertPolymarket: boolean
 }
 
 export const useCreateArbitragePairsMutation = (): (

@@ -13,7 +13,7 @@ type DeleteArbitragePairData = {
 
 export const useDeleteArbitragesMutation = (): (
   [
-    useMutation.MutationFunction<DeleteArbitragesMutationResponse, { ids: number[] }>,
+    useMutation.MutationFunction<DeleteArbitragesMutationResponse, DeleteArbitragePairData>,
     {
       ok: boolean | undefined,
       isLoading: boolean,

@@ -1,6 +1,6 @@
 'use client'
 
-import { LineData, ColorType, createChart, IChartApi, ISeriesApi, LineSeries, Time, UTCTimestamp } from 'lightweight-charts'
+import { LineData, ColorType, createChart, IChartApi, ISeriesApi, LineSeries, Time, UTCTimestamp, LineType } from 'lightweight-charts'
 import { useEffect, useRef, useState } from 'react';
 
 
@@ -35,6 +35,7 @@ interface ChartComponentColor {
 
 interface ChartComponentProps {
   pointsOfLines: {
+    show: boolean
     points: Point[],
     name: string,
     color: string,
@@ -67,12 +68,13 @@ export const LineChart = ({ pointsOfLines, lastPointOfLines, colors }: ChartComp
       const handleResize = () => {
         if (!chart) return;
 
-        chart.applyOptions({ width: chartContainerRef?.current?.clientWidth });
+        chart.applyOptions({ width: chartContainerRef?.current?.clientWidth, height: chartContainerRef?.current?.clientHeight });
       };
 
 
       let chart: IChartApi | null = null
 
+      console.log("NEW CHARTTTT")
       chart = createChart(chartContainerRef.current, {
         layout: {
           background: { type: ColorType.Solid, color: backgroundColor },
@@ -95,17 +97,22 @@ export const LineChart = ({ pointsOfLines, lastPointOfLines, colors }: ChartComp
           },
         },
         width: chartContainerRef.current.clientWidth,
-        height: chartContainerRef.current.clientWidth * 0.4
+        height: chartContainerRef.current.clientHeight,
       });
 
-      chart.timeScale().fitContent();
-      setChart(chart)
+      // chart.timeScale().fitContent();
+      chart.timeScale().applyOptions({
+        shiftVisibleRangeOnNewBar: false,
+      });
 
+      seriesMapRef.current = new Map<string, ISeriesApi<"Line">>()
+      setChart(chart)
 
       window.addEventListener('resize', handleResize);
 
       return () => {
         window.removeEventListener('resize', handleResize);
+        seriesMapRef.current = new Map<string, ISeriesApi<"Line">>()
 
         chart?.remove();
       };
@@ -114,25 +121,34 @@ export const LineChart = ({ pointsOfLines, lastPointOfLines, colors }: ChartComp
   );
 
   useEffect(() => {
-    if (!chart) {
+    if (!chart || !seriesMapRef.current) {
       return
     }
 
-    seriesMapRef.current = new Map<string, ISeriesApi<"Line">>()
     for (const pointsOfLine of pointsOfLines) {
+      const existingSeries = seriesMapRef.current.get(pointsOfLine.name)
+
+      if (existingSeries) {
+        if (!pointsOfLine.show) {
+          chart.removeSeries(existingSeries);
+          seriesMapRef.current.delete(pointsOfLine.name)
+        }
+        continue
+      }
+
       const series = chart.addSeries(LineSeries, {
+        lineType: LineType.WithSteps,
         color: pointsOfLine.color
       });
-      seriesMapRef.current.set(pointsOfLine.name, series)
 
-    }
 
-    return () => {
-      if (seriesMapRef?.current) {
-        for (const [, value] of seriesMapRef.current) {
-          chart.removeSeries(value)
-        }
+      if (!pointsOfLine.show || pointsOfLine.points.length === 0) {
+        continue
       }
+
+      series.setData(pointArrayToLineSeriesData(pointsOfLine.points))
+      seriesMapRef.current.set(pointsOfLine.name, series)
+      console.log("added new series", pointsOfLine.points.length, pointsOfLine.name)
     }
 
   }, [chart, pointsOfLines])
@@ -140,15 +156,6 @@ export const LineChart = ({ pointsOfLines, lastPointOfLines, colors }: ChartComp
   useEffect(() => {
     if (!seriesMapRef.current) {
       return
-    }
-
-    for (const pointsOfLine of pointsOfLines) {
-      const series = seriesMapRef.current.get(pointsOfLine.name)
-      if (!series) {
-        continue
-      }
-      series.setData(pointArrayToLineSeriesData(pointsOfLine.points))
-
     }
 
     for (const lastPointOfLine of lastPointOfLines) {
@@ -161,7 +168,7 @@ export const LineChart = ({ pointsOfLines, lastPointOfLines, colors }: ChartComp
       }
       series.update(pointToLineData(lastPointOfLine.point))
     }
-  }, [pointsOfLines, lastPointOfLines])
+  }, [lastPointOfLines])
 
   return (
     <div className="w-full" style={{ aspectRatio: 7 / 3 }} ref={chartContainerRef}>

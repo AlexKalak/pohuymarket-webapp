@@ -5,17 +5,18 @@ import ArbitrageInfo from "@/src/common/components/market/ArbitrageInfo"
 import { useParams } from "next/navigation"
 import { useArbitragePairQuery } from "@/src/common/api/arbitrage/hooks/useArbitragesQuery"
 
-const Market2 = () => {
+const ArbitragePage = () => {
   const { arbitragePairID } = useParams<{ arbitragePairID: string, }>()
 
+  console.log(arbitragePairID)
   const { pair, error: arbitrageError, isLoading: arbitrageIsLoading } = useArbitragePairQuery({
     where: {
       id: +arbitragePairID
     }
   })
 
-  if (!pair?.polymarketMarketID || !pair.kalshiMarketTicker) {
-    return
+  if (!pair?.polymarketMarket || !pair.kalshiMarket) {
+    return <> </>
   }
 
   return (
@@ -24,12 +25,12 @@ const Market2 = () => {
         <ArbitrageInfo pair={pair} />
       </div>
       <div className="w-full">
-        <MarketChart2 revert1={pair.revertPolymarket} revert2={false} marketID={pair.polymarketMarketID?.toString()} market2ID={pair.kalshiMarketTicker} />
+        <MarketChart2 revert1={pair.revertPolymarket} revert2={false} marketID={pair.polymarketMarket.conditionId} market2ID={pair.kalshiMarketTicker} />
       </div>
     </div>
   )
 
 }
 
-export default Market2
+export default ArbitragePage
 

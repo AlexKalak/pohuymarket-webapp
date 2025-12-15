@@ -1,20 +1,20 @@
 import { BidAskUpdateData, BidAskUpdateModel } from "@/src/entities/trade/bidAskUpdate"
 import { useSubscription } from "@apollo/client/react"
-import { useState } from "react"
-import BEST_BID_ASK_UPDATE_SUBSCRIPTION from "../gql/BID_ASK_UPDATE.gql"
+import { useMemo, useState } from "react"
+import BEST_BID_ASK_UPDATE_SUBSCRIPTION from "../gql/BEST_BID_ASK_UPDATE.gql"
+import { useBestBidAsksUpdatesQuery } from "./useBestBidAskUpdataesQuery"
 
 type BidAskUpdateSubscriptionData = {
   bidAskUpdate: BidAskUpdateData,
 }
 
-export const useBidAskUpdateSubscription = (marketIdentificator: string): {
+export const useBidAskUpdateSubscription = (marketIdentificator: string, limit = 1000): {
   bidAskUpdates: BidAskUpdateModel[],
   isLoading: boolean,
   error: string | null
 } => {
-
   //Order old -> new
-  const [liveBidAskUpdates, setLiveBidAskUpdates] = useState<BidAskUpdateModel[]>([])
+  const [subscriptionBidAskUpdates, setLiveBidAskUpdates] = useState<BidAskUpdateModel[]>([])
 
   const { loading, error } = useSubscription(BEST_BID_ASK_UPDATE_SUBSCRIPTION, {
     variables: {
@@ -41,19 +41,80 @@ export const useBidAskUpdateSubscription = (marketIdentificator: string): {
 
       setLiveBidAskUpdates((prev) => {
         const newBidAsks = [...prev, bidAskUpdate]
-
-        // const leftIndex = Math.max(newBidAsks.length - 100, 0)
-        // newBidAsks = newBidAsks.slice(leftIndex)
-
-        return newBidAsks
+        const leftIndex = Math.max(newBidAsks.length - limit, 0)
+        return newBidAsks.slice(leftIndex)
       })
     }
   })
 
+  //order new -> old
+  const { bestBidAskUpdates: historyBidAskUpdates, isLoading: historyIsLoading, error: historyError } = useBestBidAsksUpdatesQuery({
+    fromHead: true,
+    first: limit,
+    skip: 0,
+    where: {
+      marketIdentificator: marketIdentificator,
+    },
+    // pollInterval: 100000
+  })
+
+  const allBidAskUpdates = useMemo(() => {
+    if (!historyBidAskUpdates || historyBidAskUpdates.length === 0) {
+      return subscriptionBidAskUpdates.slice()
+    }
+
+    if (subscriptionBidAskUpdates?.length >= limit) {
+      return subscriptionBidAskUpdates.slice()
+    }
+
+    //convert to old -> new
+    const ascHistory = historyBidAskUpdates.slice()
+    ascHistory.reverse()
+
+    if (!subscriptionBidAskUpdates || subscriptionBidAskUpdates.length === 0) {
+      return ascHistory
+    }
+
+    const lastHistoryBidAskUpdate = ascHistory[historyBidAskUpdates.length - 1]
+    const firstSubscriptionBidAskUpdate = subscriptionBidAskUpdates[0]
+
+    if (firstSubscriptionBidAskUpdate.timestamp > lastHistoryBidAskUpdate.timestamp) {
+      const results = [...ascHistory, ...subscriptionBidAskUpdates.slice()]
+      const leftIndex = Math.max(results.length - limit, 0)
+
+      return results.slice(leftIndex)
+    }
+
+    let firstNewBidAskUpdateIndex = -1
+    for (let i = 0; i < subscriptionBidAskUpdates.length; i++) {
+      if (subscriptionBidAskUpdates[i].timestamp > lastHistoryBidAskUpdate.timestamp) {
+        firstNewBidAskUpdateIndex = i
+        break
+      }
+    }
+
+    if (firstNewBidAskUpdateIndex === -1) {
+      return ascHistory
+    }
+
+    const newBidAskUpdates = subscriptionBidAskUpdates.slice(firstNewBidAskUpdateIndex)
+
+    const results = [...ascHistory, ...newBidAskUpdates.slice()]
+    const leftIndex = Math.max(results.length - limit, 0)
+
+    return results.slice(leftIndex)
+  }, [historyBidAskUpdates, limit, subscriptionBidAskUpdates])
+
+  let errorMessage = ""
+  if (error?.message) {
+    errorMessage = error?.message ?? ""
+  } else if (historyError) {
+    errorMessage = error?.message ?? ""
+  }
   return {
-    bidAskUpdates: liveBidAskUpdates,
-    isLoading: loading,
-    error: error?.message ?? ""
+    bidAskUpdates: allBidAskUpdates,
+    isLoading: loading || historyIsLoading,
+    error: errorMessage
   }
 }
 

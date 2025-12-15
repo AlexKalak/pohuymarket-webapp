@@ -5,6 +5,11 @@ export type OrderData = {
   size?: number;
 }
 
+export type BidAskUpdateWhere = {
+  timestamp_gt?: string;
+  marketIdentificator?: string;
+}
+
 export type BidAskUpdateData = {
   marketType?: string;
   marketIdentificator?: string;

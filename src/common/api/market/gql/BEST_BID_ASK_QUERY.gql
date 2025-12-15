@@ -1,0 +1,15 @@
+query BidAsksUpdateQuery($first: Int, $fromHead: Boolean, $skip: Int, $where: BidAskUpdateWhere) {
+  bestBidAskUpdates(first: $first, fromHead: $fromHead, skip: $skip, where: $where) {
+    bestAskUpdate {
+      price
+      size
+    }
+    bestBidUpdate {
+      price
+      size
+    }
+    marketIdentificator
+    marketType
+    timestamp
+  }
+}
