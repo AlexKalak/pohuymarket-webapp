@@ -28,6 +28,9 @@ export type KalshiMarketData = {
   marketType?: string;
   closed?: boolean;
   event?: KalshiEventData;
+  yesSubtitle?: string;
+  noSubtitle?: string;
+  custom?: string;
 }
 
 export class KalshiMarketModel implements IMarket {
@@ -40,9 +43,9 @@ export class KalshiMarketModel implements IMarket {
   closeTime!: Date;
   marketType!: string;
   closed!: boolean;
-  yes_sub_title?: string;
-  no_sub_title?: string;
-  custom?: string;
+  yesSubtitle!: string;
+  noSubtitle!: string;
+  custom!: string;
   expirationValue?: string;
   status?: string;
   event?: KalshiEventModel;
@@ -85,6 +88,9 @@ export class KalshiMarketModel implements IMarket {
     this.closeTime = new Date(data.closeTime)
     this.marketType = data.marketType
     this.closed = data.closed ?? false
+    this.yesSubtitle = data.yesSubtitle ?? ""
+    this.noSubtitle = data.noSubtitle ?? ""
+    this.custom = data.custom ?? ""
 
     this.event = data?.event ? new KalshiEventModel(data.event) : undefined
   }
@@ -106,11 +112,11 @@ export class KalshiMarketModel implements IMarket {
     return this.createdTime;
   }
   GetQuestion(): string {
-    return this.title;
+    return this.title + " " + this.custom;
   }
   GetSub(): string {
-    if (this.yes_sub_title || this.no_sub_title) {
-      return `${this.yes_sub_title} | ${this.no_sub_title}`;
+    if (this.yesSubtitle || this.noSubtitle) {
+      return `${this.yesSubtitle} | ${this.noSubtitle}`;
     }
     return ""
   }

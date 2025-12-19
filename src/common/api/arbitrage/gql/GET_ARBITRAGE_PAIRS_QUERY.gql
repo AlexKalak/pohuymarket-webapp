@@ -12,6 +12,9 @@ query ArbitragePairs($first: Int, $skip: Int, $where: ArbitragePairWhere) {
       subtitle
       title
       type
+      yesSubtitle
+      noSubtitle
+      custom
     }
     kalshiMarketTicker
     polymarketMarket {

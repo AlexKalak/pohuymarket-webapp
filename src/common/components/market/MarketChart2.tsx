@@ -70,7 +70,7 @@ const MarketChart2 = ({ revert1, revert2, marketID, market2ID }: MarketChartProp
         <div>ask2</div>
       </div>
     </div>
-    <div className="w-full border border-white rounded-xl overflow-hidden">
+    <div className="px-2 py-2 w-full border border-white rounded-xl overflow-hidden">
       <LineChart
         pointsOfLines={
           [

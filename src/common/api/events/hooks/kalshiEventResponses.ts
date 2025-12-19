@@ -52,9 +52,7 @@ export type KalshiMarketResponse = {
     step: string;
   }[];
 
-  custom_strike?: {
-    Word?: string
-  }
+  custom_strike?: unknown;
 
   response_price_units: string;
   result: string;
@@ -79,9 +77,9 @@ export type KalshiMarketResponse = {
 export function kalshiMarketResponseToModel(response: KalshiMarketResponse): KalshiMarketModel {
   const marketModel = new KalshiMarketModel()
   marketModel.status = response.status
-  marketModel.yes_sub_title = response.yes_sub_title
-  marketModel.no_sub_title = response.no_sub_title
-  marketModel.custom = response.custom_strike?.Word
+  marketModel.yesSubtitle = response.yes_sub_title
+  marketModel.noSubtitle = response.no_sub_title
+  marketModel.custom = response.custom_strike ? JSON.stringify(response.custom_strike) : ""
   marketModel.expirationValue = response.expiration_value
 
   if (!response.event_ticker) {

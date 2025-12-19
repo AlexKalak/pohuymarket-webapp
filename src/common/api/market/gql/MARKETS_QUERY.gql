@@ -12,6 +12,9 @@ query Markets($first: Int!, $skip: Int!,$where: MarketWhere) {
       ticker
       title
       type
+      yesSubtitle
+      noSubtitle
+      custom
     }
     ... on PolymarketMarket {
       active

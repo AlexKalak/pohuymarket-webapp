@@ -1,3 +1,4 @@
+import Market from "@/app/market/[marketID]/page"
 import { PolymarketEventModel } from "@/src/entities/event/polymarketEventModel"
 import { KalshiMarketModel } from "@/src/entities/market/kalshiMarket"
 import { IMarket, MarketType } from "@/src/entities/market/market.interface"
@@ -23,6 +24,7 @@ const MarketsSearchBarValues = ({ values }: EventsSearchBarValuesProps) => {
         break;
     }
   }
+
 
   return <div className="w-full flex flex-col items-left  gap-2 overflow-scroll " style={{ maxHeight: 700 }}>
     {values.map((value, idx) =>

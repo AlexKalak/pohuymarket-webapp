@@ -12,6 +12,9 @@ mutation Mutation($pairs: [CreateArbitragePairInput!]) {
       ticker
       title
       type
+      yesSubtitle
+      noSubtitle
+      custom
     }
     kalshiMarketTicker
     polymarketMarket {

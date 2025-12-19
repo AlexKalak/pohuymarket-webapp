@@ -12,6 +12,9 @@ query MarketsByText($first: Int!, $skip: Int!,$text: String!) {
       ticker
       title
       type
+      yesSubtitle
+      noSubtitle
+      custom
     }
     polymarket {
       active

@@ -68,7 +68,8 @@ export const LineChart = ({ pointsOfLines, lastPointOfLines, colors }: ChartComp
       const handleResize = () => {
         if (!chart) return;
 
-        chart.applyOptions({ width: chartContainerRef?.current?.clientWidth, height: chartContainerRef?.current?.clientHeight });
+        const width = chartContainerRef?.current?.clientWidth
+        chart.applyOptions({ width: width, height: chartContainerRef?.current?.clientHeight });
       };
 
 

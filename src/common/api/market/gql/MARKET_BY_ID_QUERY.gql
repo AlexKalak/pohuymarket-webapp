@@ -12,6 +12,9 @@ query MarketByID($identificator: String) {
       ticker
       title
       type
+      yesSubtitle
+      noSubtitle
+      custom
     }
     ... on PolymarketMarket {
       active
