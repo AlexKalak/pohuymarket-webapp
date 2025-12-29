@@ -23,19 +23,39 @@ const MarketChart2 = ({ revert1, revert2, marketID, market2ID }: MarketChartProp
   const [showBid2, setShowBid2] = useState<boolean>(true)
   const [showAsk2, setShowAsk2] = useState<boolean>(true)
 
-  const { bid: bid1, ask: ask1 } = useMemo<{ bid: PointsAndLastPoint, ask: PointsAndLastPoint }>(
-    () => {
-      const bidAskPoints = pointsFromBidAskUpdates(bidAskUpdates, revert1)
-      return bidAskPoints
-    }, [bidAskUpdates, revert1])
+  const { bid: bid1, ask: ask1, lastBidSize: lastBidSize1, lastAskSize: lastAskSize1 } =
+    useMemo<{ bid: PointsAndLastPoint, ask: PointsAndLastPoint, lastBidSize: number, lastAskSize: number }>(
+      () => {
+        const bidAskPoints = pointsFromBidAskUpdates(bidAskUpdates, revert1)
+        return bidAskPoints
+      }, [bidAskUpdates, revert1])
 
-  const { bid: bid2, ask: ask2 } = useMemo<{ bid: PointsAndLastPoint, ask: PointsAndLastPoint }>(
-    () => {
-      const bidAskPoints = pointsFromBidAskUpdates(bidAskUpdates2, revert2)
-      return bidAskPoints
-    }, [bidAskUpdates2, revert2])
+  const { bid: bid2, ask: ask2, lastBidSize: lastBidSize2, lastAskSize: lastAskSize2 } =
+    useMemo<{ bid: PointsAndLastPoint, ask: PointsAndLastPoint, lastBidSize: number, lastAskSize: number }>(
+      () => {
+        const bidAskPoints = pointsFromBidAskUpdates(bidAskUpdates2, revert2)
+        return bidAskPoints
+      }, [bidAskUpdates2, revert2])
 
   return <div className="flex flex-col items-center gap-10">
+    <div className="flex gap-4">
+      <div className="flex flex-col items-center">
+        <span>bid1</span>
+        {lastBidSize1}
+      </div>
+      <div className="flex flex-col items-center">
+        <span>ask1</span>
+        {lastAskSize1}
+      </div>
+      <div className="flex flex-col items-center">
+        <span>bid2</span>
+        {lastBidSize2}
+      </div>
+      <div className="flex flex-col items-center">
+        <span>ask2</span>
+        {lastAskSize2}
+      </div>
+    </div>
     <div className="flex gap-4">
       <div className="flex flex-col">
         <input

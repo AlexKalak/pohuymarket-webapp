@@ -107,10 +107,17 @@ export const tradesToCandlesStupid = (newTrades: TradeModel[], timeSpacing: numb
   return { candles, updatingCandle }
 }
 
-export const pointsFromBidAskUpdates = (bidAskUpdates: BidAskUpdateModel[], reverted: boolean): { bid: PointsAndLastPoint, ask: PointsAndLastPoint } => {
+export const pointsFromBidAskUpdates = (bidAskUpdates: BidAskUpdateModel[], reverted: boolean): {
+  bid: PointsAndLastPoint,
+  ask: PointsAndLastPoint,
+  lastBidSize: number,
+  lastAskSize: number
+} => {
   if (!bidAskUpdates) return {
     bid: { points: [], lastPoint: null },
-    ask: { points: [], lastPoint: null }
+    ask: { points: [], lastPoint: null },
+    lastBidSize: 0,
+    lastAskSize: 0
   }
 
   const bidPoints: Point[] = []
@@ -118,16 +125,21 @@ export const pointsFromBidAskUpdates = (bidAskUpdates: BidAskUpdateModel[], reve
 
   let lastBidPoint: Point | null = null
   let lastAskPoint: Point | null = null
+  let lastBidSize: number | null = null
+  let lastAskSize: number | null = null
 
   if (reverted) {
     for (let i = 0; i < bidAskUpdates.length; i++) {
       const bidAskUpdate = bidAskUpdates[i]
 
       if (bidAskUpdate?.bestAskUpdate?.price) {
+        lastBidSize = bidAskUpdate.bestAskUpdate.size ?? null
+
         const point: Point = {
-          time: Math.floor(bidAskUpdate.timestamp / 1000),
+          time: bidAskUpdate.timestamp / 1000,
           value: (1_000_000 - bidAskUpdate.bestAskUpdate.price) / 1_000_000
         }
+
         if (point.time > (lastBidPoint?.time ?? 0)) {
           lastBidPoint = point
           bidPoints.push(point)
@@ -135,8 +147,10 @@ export const pointsFromBidAskUpdates = (bidAskUpdates: BidAskUpdateModel[], reve
       }
 
       if (bidAskUpdate?.bestBidUpdate?.price) {
+        lastAskSize = bidAskUpdate.bestBidUpdate.size ?? null
+
         const point: Point = {
-          time: Math.floor(bidAskUpdate.timestamp / 1000),
+          time: bidAskUpdate.timestamp / 1000,
           value: (1_000_000 - bidAskUpdate.bestBidUpdate.price) / 1_000_000
         }
         if (point.time > (lastAskPoint?.time ?? 0)) {
@@ -152,8 +166,10 @@ export const pointsFromBidAskUpdates = (bidAskUpdates: BidAskUpdateModel[], reve
       const bidAskUpdate = bidAskUpdates[i]
 
       if (bidAskUpdate?.bestBidUpdate?.price) {
+        lastAskSize = bidAskUpdate.bestBidUpdate.size ?? null
+
         const point: Point = {
-          time: Math.floor(bidAskUpdate.timestamp / 1000),
+          time: bidAskUpdate.timestamp / 1000,
           value: bidAskUpdate.bestBidUpdate.price / 1_000_000
         }
         if (point.time > (lastBidPoint?.time ?? 0)) {
@@ -163,8 +179,10 @@ export const pointsFromBidAskUpdates = (bidAskUpdates: BidAskUpdateModel[], reve
       }
 
       if (bidAskUpdate?.bestAskUpdate?.price) {
+        lastBidSize = bidAskUpdate.bestAskUpdate.size ?? null
+
         const point: Point = {
-          time: Math.floor(bidAskUpdate.timestamp / 1000),
+          time: bidAskUpdate.timestamp / 1000,
           value: bidAskUpdate.bestAskUpdate.price / 1_000_000
         }
         if (point.time > (lastAskPoint?.time ?? 0)) {
@@ -180,12 +198,14 @@ export const pointsFromBidAskUpdates = (bidAskUpdates: BidAskUpdateModel[], reve
   return {
     bid: {
       points: bidPoints,
-      lastPoint: lastBidPoint
+      lastPoint: lastBidPoint,
     },
     ask: {
       points: askPoints,
       lastPoint: lastAskPoint
-    }
+    },
+    lastBidSize: lastBidSize ?? 0,
+    lastAskSize: lastAskSize ?? 0,
   }
 
 }

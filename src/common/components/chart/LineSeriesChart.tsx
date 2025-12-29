@@ -72,7 +72,6 @@ export const LineChart = ({ pointsOfLines, lastPointOfLines, colors }: ChartComp
         chart.applyOptions({ width: width, height: chartContainerRef?.current?.clientHeight });
       };
 
-
       let chart: IChartApi | null = null
 
       console.log("NEW CHARTTTT")
