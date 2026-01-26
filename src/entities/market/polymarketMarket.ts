@@ -55,10 +55,10 @@ export class PolymarketMarketModel implements IMarket {
   negRiskRequestID?: string;
   active: boolean;
   closed: boolean;
+  event_slug: string = "";
   event?: PolymarketEventModel;
 
   constructor(data: PolymarketMarketData) {
-    console.log("type", data.type)
     const type = marketTypeFromString(data.type ?? "");
 
     if (!type) {
@@ -127,7 +127,13 @@ export class PolymarketMarketModel implements IMarket {
     this.active = data.active ?? true;
     this.closed = data.closed ?? false;
 
-    this.event = data.event ? new PolymarketEventModel(data.event) : undefined;
+    if (data?.event?.slug) {
+      this.event_slug = data.event.slug
+    }
+
+    try {
+      this.event = data.event ? new PolymarketEventModel(data.event) : undefined;
+    } catch { }
   }
 
   Downcast() {
@@ -157,5 +163,11 @@ export class PolymarketMarketModel implements IMarket {
   GetMarketType(): MarketType {
     return this.type;
   }
+  GetEventIdentificator(): string {
+    return this.event_slug
+  }
 }
+
+
+
 

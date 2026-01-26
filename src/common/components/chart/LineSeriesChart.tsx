@@ -1,6 +1,6 @@
 'use client'
 
-import { LineData, ColorType, createChart, IChartApi, ISeriesApi, LineSeries, Time, UTCTimestamp, LineType } from 'lightweight-charts'
+import { LineData, ColorType, createChart, IChartApi, ISeriesApi, LineSeries, Time, UTCTimestamp, LineType, createSeriesMarkers, SeriesMarker } from 'lightweight-charts'
 import { useEffect, useRef, useState } from 'react';
 
 
@@ -33,7 +33,15 @@ interface ChartComponentColor {
   areaBottomColor: string
 }
 
+interface MarkersSet {
+  show: boolean
+  points: Point[],
+  name: string,
+  color: string,
+}
+
 interface ChartComponentProps {
+  markerSets: MarkersSet[],
   pointsOfLines: {
     show: boolean
     points: Point[],
@@ -47,7 +55,7 @@ interface ChartComponentProps {
   colors?: ChartComponentColor
 }
 
-export const LineChart = ({ pointsOfLines, lastPointOfLines, colors }: ChartComponentProps) => {
+export const LineChart = ({ pointsOfLines, lastPointOfLines, markerSets, colors }: ChartComponentProps) => {
   const {
     backgroundColor = 'black',
     lineColor = '#2962FF',
@@ -58,6 +66,7 @@ export const LineChart = ({ pointsOfLines, lastPointOfLines, colors }: ChartComp
 
   const chartContainerRef = useRef<HTMLDivElement>(null);
   const seriesMapRef = useRef<Map<string, ISeriesApi<"Line">>>(null)
+  const tradeSeriesMapRef = useRef<Map<string, ISeriesApi<"Line">>>(null)
 
   const [chart, setChart] = useState<IChartApi>()
 
@@ -106,6 +115,7 @@ export const LineChart = ({ pointsOfLines, lastPointOfLines, colors }: ChartComp
       });
 
       seriesMapRef.current = new Map<string, ISeriesApi<"Line">>()
+      tradeSeriesMapRef.current = new Map<string, ISeriesApi<"Line">>()
       setChart(chart)
 
       window.addEventListener('resize', handleResize);
@@ -141,7 +151,6 @@ export const LineChart = ({ pointsOfLines, lastPointOfLines, colors }: ChartComp
         color: pointsOfLine.color
       });
 
-
       if (!pointsOfLine.show || pointsOfLine.points.length === 0) {
         continue
       }
@@ -152,6 +161,42 @@ export const LineChart = ({ pointsOfLines, lastPointOfLines, colors }: ChartComp
     }
 
   }, [chart, pointsOfLines])
+
+  useEffect(() => {
+    if (!chart || !tradeSeriesMapRef.current) {
+      return
+    }
+
+    for (const markerSet of markerSets) {
+      if (!markerSet?.points?.length) {
+        continue
+      }
+      const existingTradeSeries = tradeSeriesMapRef.current.get(markerSet.name)
+      if (existingTradeSeries) {
+        continue
+      }
+
+      const seriesTrades = chart.addSeries(LineSeries, {
+        color: markerSet.color,
+        lineVisible: false,
+        lineType: LineType.Simple,
+        pointMarkersRadius: 3,
+        pointMarkersVisible: true,
+        lastValueVisible: false,
+        crosshairMarkerVisible: false
+      });
+
+      tradeSeriesMapRef.current.set(markerSet.name, seriesTrades)
+
+      if (!markerSet.show || markerSet.points.length === 0) {
+        continue
+      }
+
+      seriesTrades.setData(pointArrayToLineSeriesData(markerSet.points))
+      console.log("added new trade series", markerSet.points.length, markerSet.name)
+    }
+
+  }, [chart, markerSets])
 
   useEffect(() => {
     if (!seriesMapRef.current) {

@@ -1,0 +1,56 @@
+query EVENTS_BY_TEXT($first: Int, $text: String) {
+  eventsByText(first: $first, text: $text) {
+    kalshi {
+      ticker
+      title
+      markets {
+        closeTime
+        closed
+        createdTime
+        custom
+        event_ticker
+        marketType
+        noSubtitle
+        subtitle
+        ticker
+        title
+        type
+        yesSubtitle
+      }
+    }
+    polymarket {
+      active
+      closed
+      description
+      enableOrderBook
+      endDate
+      icon
+      id
+      image
+      markets {
+        active
+        closed
+        conditionId
+        endDate
+        event_id
+        icon
+        id
+        image
+        negRisk
+        negRiskMarketID
+        negRiskRequestID
+        noAssetId
+        question
+        slug
+        startDate
+        type
+        yesAssetId
+      }
+      negRisk
+      negRiskMarketID
+      slug
+      startDate
+      title
+    }
+  }
+}

@@ -4,8 +4,9 @@ import LineChart from "@/src/common/components/chart/LineSeriesChart"
 import { useMemo, useState } from "react"
 import { useBidAskUpdateSubscription } from "../../api/market/hooks/useBestBidAskUpdatesSubscription"
 import { Point } from "../chart/LineSeriesChart"
-import { PointsAndLastPoint, pointsFromBidAskUpdates } from "./core/candlesFromTrades"
+import { PointsAndLastPoint, pointsFromBidAskUpdates, pointsFromKalshiTrades } from "./core/candlesFromTrades"
 import { useMarketByIdentificatorQuery, useMarketsQuery } from "../../api/market/hooks/useMarketsQuery"
+import { useKalshiTradesForMarket } from "../../api/market/hooks/useMarketTrades"
 
 type MarketChartProps = {
   revert1: boolean
@@ -15,8 +16,10 @@ type MarketChartProps = {
 }
 const MarketChart2 = ({ revert1, revert2, marketID, market2ID }: MarketChartProps) => {
 
-  const { bidAskUpdates, error, isLoading } = useBidAskUpdateSubscription(marketID, 30000)
-  const { bidAskUpdates: bidAskUpdates2, error: error2, isLoading: isLoading2 } = useBidAskUpdateSubscription(market2ID, 30000)
+  const { bidAskUpdates, error, isLoading } = useBidAskUpdateSubscription(marketID, 10000)
+  const { bidAskUpdates: bidAskUpdates2, error: error2, isLoading: isLoading2 } = useBidAskUpdateSubscription(market2ID, 10000)
+
+  const { trades: kalshiTrades } = useKalshiTradesForMarket(market2ID)
 
   const [showBid1, setShowBid1] = useState<boolean>(true)
   const [showAsk1, setShowAsk1] = useState<boolean>(true)
@@ -36,6 +39,22 @@ const MarketChart2 = ({ revert1, revert2, marketID, market2ID }: MarketChartProp
         const bidAskPoints = pointsFromBidAskUpdates(bidAskUpdates2, revert2)
         return bidAskPoints
       }, [bidAskUpdates2, revert2])
+
+  const { yesPoints, noPoints } = useMemo<{
+    yesPoints: Point[],
+    noPoints: Point[]
+  }>(() => {
+    if (!kalshiTrades) {
+      return {
+        yesPoints: [],
+        noPoints: []
+      }
+    }
+    const ascTrades = [...kalshiTrades]
+    ascTrades.reverse()
+
+    return pointsFromKalshiTrades(ascTrades, false)
+  }, [kalshiTrades])
 
   return <div className="flex flex-col items-center gap-10">
     <div className="flex gap-4">
@@ -120,6 +139,7 @@ const MarketChart2 = ({ revert1, revert2, marketID, market2ID }: MarketChartProp
             },
           ]
         }
+
         lastPointOfLines={
           [
             {
@@ -138,6 +158,23 @@ const MarketChart2 = ({ revert1, revert2, marketID, market2ID }: MarketChartProp
               point: ask2.lastPoint,
               name: "asks2",
             },
+          ]
+        }
+
+        markerSets={
+          [
+            {
+              name: "yes_kalshi_trades",
+              show: true,
+              color: "#ff00dd",
+              points: yesPoints
+            },
+            {
+              name: "no_kalshi_trades",
+              show: true,
+              color: "red",
+              points: noPoints
+            }
           ]
         }
       />

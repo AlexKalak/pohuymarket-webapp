@@ -25,6 +25,8 @@ export class MarketWhere {
 export interface IMarket {
   GetMarketType(): MarketType;
 
+  GetEventIdentificator(): string;
+
   GetIdentificator(): string;
   GetTitle(): string;
   GetQuestion(): string;

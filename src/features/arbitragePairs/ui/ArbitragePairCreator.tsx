@@ -1,5 +1,6 @@
 'use client'
 import { useCreateArbitragePairsMutation } from "@/src/common/api/arbitrage/hooks/useCreateArbitrageMutation"
+import { useLoadEventsMutation } from "@/src/common/api/events/hooks/useLoadEventsMutation"
 import { useCreateAritragePairState } from "@/src/stores/createArbitragePairs"
 import { useEffect, useState } from "react"
 
@@ -14,8 +15,10 @@ const ArbitragePairCreator = () => {
 
   const deletePolymarketMarket = () => setPolymarketMarket(null)
   const deleteKalshiMarket = () => setKalshiMarket(null)
+  const [loadEvents, setLoadEvents] = useState<boolean>(false)
 
   const [createArbitragePair, { pairs, isLoading, error }] = useCreateArbitragePairsMutation()
+  const [loadEventsMutation, { ok, isLoading: loadEventsIsLoading, error: loadEventsError }] = useLoadEventsMutation()
   console.log(pairs)
 
   useEffect(() => {
@@ -30,6 +33,29 @@ const ArbitragePairCreator = () => {
       setKalshiMarket(null)
     }
   }, [pairs])
+
+  const handleLoadEventsButtonClick = () => {
+    if (!polymarketMarket || !kalshiMarket) {
+      return
+    }
+
+    console.log("POL: ", polymarketMarket)
+    console.log("KAL: ", kalshiMarket)
+    loadEventsMutation({
+      variables: {
+        events: [
+          {
+            type: "polymarket",
+            slug: polymarketMarket.event_slug
+          },
+          {
+            type: "kalshi",
+            ticker: kalshiMarket.event_ticker
+          }
+        ]
+      }
+    })
+  }
 
   const handleButtonClick = () => {
     if (!polymarketMarket || !kalshiMarket) {
@@ -96,6 +122,20 @@ const ArbitragePairCreator = () => {
           >
             +Create new pair
           </button>
+        }
+        {(polymarketMarket && kalshiMarket) &&
+          <button
+            onClick={handleLoadEventsButtonClick}
+            className="bg-white text-black rounded-xl cursor-pointer px-4 py-2"
+          >
+            LoadEvents
+          </button>
+        }
+        {
+          (error || loadEventsError) && <div className="flex flex-col">
+            <div>Error: {error}</div>
+            <div>Load Events Error: {loadEventsError}</div>
+          </div>
         }
       </div>
     </div>

@@ -1,0 +1,23 @@
+mutation LoadEvents($events: [LoadEventInput!]) {
+  loadEvents(events: $events) {
+    ... on KalshiEvent {
+      ticker
+      title
+    }
+    ... on PolymarketEvent {
+      active
+      closed
+      description
+      enableOrderBook
+      endDate
+      icon
+      id
+      image
+      negRisk
+      negRiskMarketID
+      slug
+      startDate
+      title
+    }
+  }
+}

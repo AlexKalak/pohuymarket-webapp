@@ -95,10 +95,10 @@ export class KalshiMarketModel implements IMarket {
     this.event = data?.event ? new KalshiEventModel(data.event) : undefined
   }
 
-
   Downcast(): unknown {
     return this;
   }
+
   GetEvent(): IEvent | undefined {
     return this.event;
   }
@@ -129,5 +129,8 @@ export class KalshiMarketModel implements IMarket {
   GetMarketType(): MarketType {
     return this.type;
   }
-}
 
+  GetEventIdentificator(): string {
+    return this.event_ticker;
+  }
+}

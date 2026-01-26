@@ -2,6 +2,7 @@ import { CandleModel } from "@/src/entities/candle/candle";
 import { TradeModel } from "@/src/entities/trade/ordersMatchModel";
 import { type Point } from "../../chart/LineSeriesChart";
 import { BidAskUpdateModel } from "@/src/entities/trade/bidAskUpdate";
+import { KalshiTradeData } from "@/src/entities/market/kalshiTradesModel";
 
 export type PointsAndLastPoint = {
   points: Point[]
@@ -209,3 +210,58 @@ export const pointsFromBidAskUpdates = (bidAskUpdates: BidAskUpdateModel[], reve
   }
 
 }
+
+
+export const pointsFromKalshiTrades = (trades: KalshiTradeData[], reversed: boolean): {
+  yesPoints: Point[],
+  noPoints: Point[]
+} => {
+  if (!trades) return {
+    yesPoints: [],
+    noPoints: []
+  }
+
+  const yesPoints: Point[] = []
+  const noPoints: Point[] = []
+
+  let lastTime = null
+  for (let i = 0; i < trades.length; i++) {
+    const trade = trades[i]
+
+    const timestamp = new Date(trade.created_time).getTime() / 1000
+
+    console.log(Math.floor(lastTime ?? 0 * 1000), Math.floor(timestamp * 1000))
+    if (lastTime && Math.floor(timestamp * 1000) <= Math.floor(lastTime * 1000)) {
+      continue
+    }
+
+    lastTime = timestamp
+
+    const point: Point = {
+      time: timestamp,
+      value: reversed ? Number(trade.no_price_dollars) : Number(trade.yes_price_dollars)
+    }
+
+    if (trade?.taker_side === "yes") {
+      yesPoints.push(point)
+    }
+    else {
+      noPoints.push(point)
+    }
+    // }
+    // } else {
+    //   const point: Point = {
+    //     time: timestamp,
+    //     value: reversed ? Number(trade.yes_price_dollars) : Number(trade.no_price_dollars)
+    //   }
+    //
+    //   noPoints.push(point)
+    // }
+  }
+
+  return {
+    yesPoints,
+    noPoints
+  }
+}
+
