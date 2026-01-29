@@ -1,6 +1,7 @@
-import { IEvent } from "@/src/entities/event/event.interface"
+import { EventType, IEvent } from "@/src/entities/event/event.interface"
 import MarketsSearchBarValues from "./MarketsSearchBarValues"
 import { useState } from "react"
+import { PolymarketEventData, PolymarketEventModel } from "@/src/entities/event/polymarketEventModel"
 
 type EventsSearchBarValuesProps = {
   values: IEvent[],
@@ -22,6 +23,9 @@ const EventsSearchBarValues = ({ values }: EventsSearchBarValuesProps) => {
   //   }
   // }
   //
+  if (!values.length) {
+    return <></>
+  }
 
   return <div className="w-full flex flex-col items-left  gap-2 px-2 overflow-scroll " style={{ maxHeight: 700 }}>
     {values.map((value, idx) =>
@@ -44,6 +48,7 @@ const EventsSearchBarValue = ({ value }: { value: IEvent }) => {
         >
           <div>{value.GetIdentificator()}</div>
           <div>{value.GetTitle()}</div>
+          <div>{value.GetEventType() === EventType.Polymarket && (value.Downcast() as PolymarketEventModel).slug}</div>
         </div>
         <div
           className="px-5 overflow-hidden"

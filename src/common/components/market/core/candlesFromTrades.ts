@@ -227,10 +227,11 @@ export const pointsFromKalshiTrades = (trades: KalshiTradeData[], reversed: bool
   let lastTime = null
   for (let i = 0; i < trades.length; i++) {
     const trade = trades[i]
+    console.log(trades[i])
 
     const timestamp = new Date(trade.created_time).getTime() / 1000
 
-    console.log(Math.floor(lastTime ?? 0 * 1000), Math.floor(timestamp * 1000))
+    console.log(Math.floor((lastTime ?? 0) * 1000), Math.floor(timestamp * 1000))
     if (lastTime && Math.floor(timestamp * 1000) <= Math.floor(lastTime * 1000)) {
       continue
     }

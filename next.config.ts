@@ -16,14 +16,14 @@ const nextConfig: NextConfig = {
         source: '/graphql', // Matches any request starting with /api/
         destination: 'http://localhost:3000/graphql', // Proxies to your backend server
       },
-      {
-        source: '/gamma-polymarket/:path*', // Matches any request starting with /api/
-        destination: 'https://gamma-api.polymarket.com/:path*', // Proxies to your backend server
-      },
-      {
-        source: '/kalshi-api/:path*', // Matches any request starting with /api/
-        destination: 'https://api.elections.kalshi.com/:path*', // Proxies to your backend server
-      },
+      //{
+      //  source: '/gamma-polymarket/:path*', // Matches any request starting with /api/
+      //  destination: 'https://gamma-api.polymarket.com/:path*', // Proxies to your backend server
+      //},
+      //{
+      //  source: '/kalshi-api/:path*', // Matches any request starting with /api/
+      //  destination: 'https://api.elections.kalshi.com/:path*', // Proxies to your backend server
+      //},
     ];
   },
 };

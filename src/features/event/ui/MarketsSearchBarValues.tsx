@@ -46,11 +46,19 @@ const MarketsSearchBarValues = ({ values }: EventsSearchBarValuesProps) => {
   }
 
   return <div className="w-full flex flex-col items-left  gap-2 overflow-scroll " style={{ maxHeight: 300 }}>
-    {values.map((value, idx) =>
-      <div className="w-full flex items-center  border border-bottom border-white py-2 px-2" key={idx}>
-        <div className="flex flex-col">
+    {values.map((value, idx) => {
+      const lowered = value.GetQuestion().toLowerCase()
+      const includes = lowered.includes("bo3") || lowered.includes("bo5") || lowered.includes("bo1")
+      return <div className="w-full flex items-center  border border-bottom border-white py-2 px-2" key={idx}>
+        <div
+          className="flex flex-col"
+          style={{
+            color: includes ? "green" : "white"
+          }}
+        >
           <div>{value.GetIdentificator()}</div>
-          <div>{value.GetQuestion()}</div>
+          <div
+          >{value.GetQuestion()}</div>
           <div>{value.GetMarketType() === MarketType.Kalshi && (value.Downcast() as KalshiMarketModel)?.yesSubtitle}</div>
           <div>
             {value.GetMarketType() === MarketType.Polymarket &&
@@ -70,6 +78,8 @@ const MarketsSearchBarValues = ({ values }: EventsSearchBarValuesProps) => {
           +
         </button>
       </div>
+
+    }
     )}
   </div >
 }
