@@ -17,7 +17,7 @@ type MarketChartProps = {
 const MarketChart2 = ({ revert1, revert2, marketID, market2ID }: MarketChartProps) => {
 
   const { bidAskUpdates, error, isLoading } = useBidAskUpdateSubscription(marketID, 10000)
-  const { bidAskUpdates: bidAskUpdates2, error: error2, isLoading: isLoading2 } = useBidAskUpdateSubscription(market2ID, 10000)
+  const { bidAskUpdates: bidAskUpdates2, error: error2, isLoading: isLoading2 } = useBidAskUpdateSubscription('5731', 10000)
 
   const { trades: kalshiTrades } = useKalshiTradesForMarket(market2ID)
 

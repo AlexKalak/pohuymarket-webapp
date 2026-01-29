@@ -3,6 +3,7 @@ import { IEvent } from "../event/event.interface";
 export enum MarketType {
   Polymarket = 'polymarket',
   Kalshi = 'kalshi',
+  PredictFun = 'predictFun',
 }
 
 export function marketTypeFromString(marketType: string): MarketType | undefined {
@@ -11,6 +12,8 @@ export function marketTypeFromString(marketType: string): MarketType | undefined
       return MarketType.Polymarket;
     case MarketType.Kalshi.toString():
       return MarketType.Kalshi;
+    case MarketType.PredictFun.toString():
+      return MarketType.PredictFun;
   }
 
   return undefined
