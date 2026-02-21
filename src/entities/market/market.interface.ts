@@ -1,4 +1,22 @@
 import { IEvent } from "../event/event.interface";
+import { KalshiMarketData, KalshiMarketModel } from "./kalshiMarket";
+import { PolymarketMarketData, PolymarketMarketModel } from "./polymarketMarket";
+import { PredictFunMarketData, PredictFunMarketModel } from "./predictFunMarket";
+
+export type PolymorphicMarketData = PolymarketMarketData | KalshiMarketData | PredictFunMarketData
+export type PolymorphicMarketModel = PolymarketMarketModel | KalshiMarketModel | PredictFunMarketModel
+
+export function modelFromPolymorphicModelData(polymorphicData: PolymorphicMarketData, marketType: MarketType): PolymorphicMarketModel | undefined {
+  const data = { ...polymorphicData }
+  switch (marketType) {
+    case MarketType.Polymarket:
+      return new PolymarketMarketModel(data as PolymarketMarketData)
+    case MarketType.Kalshi:
+      return new KalshiMarketModel(data as KalshiMarketData)
+    case MarketType.PredictFun:
+      return new PredictFunMarketModel(data as PredictFunMarketData)
+  }
+}
 
 export enum MarketType {
   Polymarket = 'polymarket',

@@ -1,0 +1,28 @@
+query GET_ORDER_FILLS_FOR_MARKET($marketIdentificator: String) {
+  orderFills(marketIdentificator: $marketIdentificator) {
+    ... on KalshiOrderFill {
+      action
+      contractsAmount
+      createdAt
+      id
+      kalshiMarketTicker
+      kalshiOrderID
+      price
+      side
+      timestamp
+      updatedAt
+    }
+    ... on PolymarketOrderFill {
+      action
+      asset_id
+      contractsAmount
+      createdAt
+      id
+      polymarketMarketIdentificator
+      polymarketOrderID
+      price
+      timestamp
+      updatedAt
+    }
+  }
+}

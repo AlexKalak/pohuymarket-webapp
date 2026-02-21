@@ -2,12 +2,15 @@ import GET_EVENTS_BY_TEXT from "../gql/EVENTS_BY_TEXT.gql"
 import { useQuery } from "@apollo/client/react";
 import { PolymarketEventData, PolymarketEventModel } from "@/src/entities/event/polymarketEventModel";
 import { KalshiEventData, KalshiEventModel } from "@/src/entities/event/kalshiEventModel";
+import { PredictFunMarketModel, PredictFunMarketData } from "@/src/entities/market/predictFunMarket";
+import { PredictFunEventData, PredictFunEventModel } from "@/src/entities/event/predictFunEventModel";
 
 
 type EventsByTextResponse = {
   eventsByText: {
     polymarket: PolymarketEventData[],
     kalshi: KalshiEventData[]
+    predictFun: PredictFunEventData[]
   }
 }
 
@@ -21,6 +24,7 @@ type UseEventsByTextProps = {
 export const useEventsByTextQuery = ({ first = 1000, skip = 0, text, pollInterval }: UseEventsByTextProps): {
   kalshiEvents: KalshiEventModel[],
   polymarketEvents: PolymarketEventModel[]
+  predictFunEvents: PredictFunEventModel[]
   isLoading: boolean,
   error: string | null
 } => {
@@ -39,6 +43,7 @@ export const useEventsByTextQuery = ({ first = 1000, skip = 0, text, pollInterva
     return {
       polymarketEvents: [],
       kalshiEvents: [],
+      predictFunEvents: [],
       isLoading: loading,
       error: error?.message ?? null,
     }
@@ -68,9 +73,23 @@ export const useEventsByTextQuery = ({ first = 1000, skip = 0, text, pollInterva
     }
   }
 
+  const predictFunEvents: PredictFunEventModel[] = []
+  console.log("Predict fun events data: ", eventsByText.predictFun)
+  for (const eventData of eventsByText?.predictFun) {
+    try {
+      const eventModel = new PredictFunEventModel(eventData)
+      predictFunEvents.push(eventModel)
+    } catch (e) {
+      console.log(e)
+      continue
+    }
+  }
+  console.log("Predict fun events models: ", predictFunEvents)
+
   return {
     polymarketEvents: polymarketEvents,
     kalshiEvents: kalshiEvents,
+    predictFunEvents: predictFunEvents,
     isLoading: loading,
     error: error?.message ?? null
   }

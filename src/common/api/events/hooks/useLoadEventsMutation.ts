@@ -6,7 +6,7 @@ type LoadEventsResponse = {
 }
 
 type LoadEventUnit = {
-  type: "kalshi" | "polymarket",
+  type: "kalshi" | "polymarket" | "predictFun",
   ticker?: string,
   slug?: string,
 }

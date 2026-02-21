@@ -30,17 +30,17 @@ function formatDate(date: Date | undefined): string {
 
 
 const MarketsSearchBarValues = ({ values }: EventsSearchBarValuesProps) => {
-  const setCreatingArbitragePairPolymarket = useCreateAritragePairState(s => s.setPolymarketMarket)
-  const setCreatingArbitragePairKalshi = useCreateAritragePairState(s => s.setKalshiMarket)
+  const setCreatingArbitragePairMarket1 = useCreateAritragePairState(s => s.setMarket1)
+  const setCreatingArbitragePairMarket2 = useCreateAritragePairState(s => s.setMarket2)
 
   const handleButtonClick = ({ market }: { market: IMarket }) => {
     const marketType = market.GetMarketType()
     switch (marketType) {
       case MarketType.Polymarket:
-        setCreatingArbitragePairPolymarket(market.Downcast() as PolymarketMarketModel)
+        setCreatingArbitragePairMarket1(market.Downcast() as PolymarketMarketModel)
         break;
       case MarketType.Kalshi:
-        setCreatingArbitragePairKalshi(market.Downcast() as KalshiMarketModel)
+        setCreatingArbitragePairMarket2(market.Downcast() as KalshiMarketModel)
         break;
     }
   }
@@ -49,6 +49,7 @@ const MarketsSearchBarValues = ({ values }: EventsSearchBarValuesProps) => {
     {values.map((value, idx) => {
       const lowered = value.GetQuestion().toLowerCase()
       const includes = lowered.includes("bo3") || lowered.includes("bo5") || lowered.includes("bo1")
+
       return <div className="w-full flex items-center  border border-bottom border-white py-2 px-2" key={idx}>
         <div
           className="flex flex-col"

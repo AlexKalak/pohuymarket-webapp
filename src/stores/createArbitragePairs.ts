@@ -2,24 +2,23 @@
 import { KalshiMarketModel } from "@/src/entities/market/kalshiMarket"
 import { PolymarketMarketModel } from "@/src/entities/market/polymarketMarket"
 import { create } from "zustand"
+import { PredictFunMarketModel } from "../entities/market/predictFunMarket"
 
 type CreateArbitragePairState = {
-  polymarketMarket: PolymarketMarketModel | null
-  kalshiMarket: KalshiMarketModel | null
+  market1: KalshiMarketModel | PredictFunMarketModel | PolymarketMarketModel | null
+  market2: KalshiMarketModel | PredictFunMarketModel | PolymarketMarketModel | null
 
-  setPolymarketMarket: (market: PolymarketMarketModel | null) => void
-  setKalshiMarket: (market: KalshiMarketModel | null) => void
+  setMarket1: (market: KalshiMarketModel | PredictFunMarketModel | PolymarketMarketModel | null) => void
+  setMarket2: (market: KalshiMarketModel | PredictFunMarketModel | PolymarketMarketModel | null) => void
 }
 
 export const useCreateAritragePairState = create<CreateArbitragePairState>((set) => ({
-  polymarketMarket: null,
-  kalshiMarket: null,
-
-  setPolymarketMarket: (market) => set(() => ({
-    polymarketMarket: market,
+  market1: null,
+  market2: null,
+  setMarket1: (market: KalshiMarketModel | PredictFunMarketModel | PolymarketMarketModel | null) => set(() => ({
+    market1: market,
   })),
-
-  setKalshiMarket: (market) => set(() => ({
-    kalshiMarket: market,
+  setMarket2: (market: KalshiMarketModel | PredictFunMarketModel | PolymarketMarketModel | null) => set(() => ({
+    market2: market,
   })),
 }))

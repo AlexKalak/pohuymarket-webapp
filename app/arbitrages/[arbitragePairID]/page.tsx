@@ -4,6 +4,7 @@ import MarketChart2 from "@/src/common/components/market/MarketChart2"
 import ArbitrageInfo from "@/src/common/components/market/ArbitrageInfo"
 import { useParams } from "next/navigation"
 import { useArbitragePairQuery } from "@/src/common/api/arbitrage/hooks/useArbitragesQuery"
+import { marketTypeFromString } from "@/src/entities/market/market.interface"
 
 const ArbitragePage = () => {
   const { arbitragePairID } = useParams<{ arbitragePairID: string, }>()
@@ -15,7 +16,14 @@ const ArbitragePage = () => {
     }
   })
 
-  if (!pair?.polymarketMarket || !pair.kalshiMarket) {
+  if (!pair) {
+    return <></>
+  }
+
+  const marketType1 = marketTypeFromString(pair.marketType1)
+  const marketType2 = marketTypeFromString(pair.marketType2)
+
+  if (!pair?.marketIdentificator1 || !pair.marketIdentificator2 || !marketType1 || !marketType2) {
     return <> </>
   }
 
@@ -25,7 +33,7 @@ const ArbitragePage = () => {
         <ArbitrageInfo pair={pair} />
       </div>
       <div className="w-full">
-        <MarketChart2 revert1={pair.revertPolymarket} revert2={false} marketID={pair.polymarketMarket.conditionId} market2ID={pair.kalshiMarketTicker} />
+        <MarketChart2 marketType1={marketType1} marketType2={marketType2} marketIdentificator1={pair.marketIdentificator1} marketIdentificator2={pair.marketIdentificator2} />
       </div>
     </div>
   )

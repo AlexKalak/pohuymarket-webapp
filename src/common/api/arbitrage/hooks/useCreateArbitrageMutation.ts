@@ -3,15 +3,17 @@ import { useMutation, useQuery } from "@apollo/client/react"
 import CREATE_ARIBTRAGE_MUTATION from "../gql/CREATE_ARBITRAGE_MUTATION.gql"
 import { queryGroups } from "../../queryGroups/queryGroups"
 import { useEffect, useState } from "react"
+import { MarketType } from "@/src/entities/market/market.interface"
 
 type CreateArbitrageMutationResponse = {
   createArbitragePairs: ArbitragePairData[]
 }
 
 type CreateArbitragePairData = {
-  polymarketMarketID: number,
-  kalshiMarketTicker: string,
-  revertPolymarket: boolean
+  marketType1: MarketType,
+  marketType2: MarketType,
+  marketIdentificator1: string
+  marketIdentificator2: string
 }
 
 export const useCreateArbitragePairsMutation = (): (

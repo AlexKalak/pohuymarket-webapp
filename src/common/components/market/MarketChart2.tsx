@@ -7,19 +7,19 @@ import { Point } from "../chart/LineSeriesChart"
 import { PointsAndLastPoint, pointsFromBidAskUpdates, pointsFromKalshiTrades } from "./core/candlesFromTrades"
 import { useMarketByIdentificatorQuery, useMarketsQuery } from "../../api/market/hooks/useMarketsQuery"
 import { useKalshiTradesForMarket } from "../../api/market/hooks/useMarketTrades"
+import { MarketType } from "@/src/entities/market/market.interface"
 
 type MarketChartProps = {
-  revert1: boolean
-  revert2: boolean
-  marketID: string
-  market2ID: string
+  marketType1: MarketType
+  marketType2: MarketType
+  marketIdentificator1: string
+  marketIdentificator2: string
 }
-const MarketChart2 = ({ revert1, revert2, marketID, market2ID }: MarketChartProps) => {
+const MarketChart2 = ({ marketType1, marketType2, marketIdentificator1, marketIdentificator2 }: MarketChartProps) => {
+  const { bidAskUpdates, error, isLoading } = useBidAskUpdateSubscription(marketIdentificator1, 10000)
+  const { bidAskUpdates: bidAskUpdates2, error: error2, isLoading: isLoading2 } = useBidAskUpdateSubscription(marketIdentificator2, 10000)
 
-  const { bidAskUpdates, error, isLoading } = useBidAskUpdateSubscription(marketID, 10000)
-  const { bidAskUpdates: bidAskUpdates2, error: error2, isLoading: isLoading2 } = useBidAskUpdateSubscription('5731', 10000)
-
-  const { trades: kalshiTrades } = useKalshiTradesForMarket(market2ID)
+  //const { trades: kalshiTrades } = useKalshiTradesForMarket(market2ID)
 
   const [showBid1, setShowBid1] = useState<boolean>(true)
   const [showAsk1, setShowAsk1] = useState<boolean>(true)
@@ -29,32 +29,32 @@ const MarketChart2 = ({ revert1, revert2, marketID, market2ID }: MarketChartProp
   const { bid: bid1, ask: ask1, lastBidSize: lastBidSize1, lastAskSize: lastAskSize1 } =
     useMemo<{ bid: PointsAndLastPoint, ask: PointsAndLastPoint, lastBidSize: number, lastAskSize: number }>(
       () => {
-        const bidAskPoints = pointsFromBidAskUpdates(bidAskUpdates, revert1)
+        const bidAskPoints = pointsFromBidAskUpdates(bidAskUpdates, false)
         return bidAskPoints
-      }, [bidAskUpdates, revert1])
+      }, [bidAskUpdates])
 
   const { bid: bid2, ask: ask2, lastBidSize: lastBidSize2, lastAskSize: lastAskSize2 } =
     useMemo<{ bid: PointsAndLastPoint, ask: PointsAndLastPoint, lastBidSize: number, lastAskSize: number }>(
       () => {
-        const bidAskPoints = pointsFromBidAskUpdates(bidAskUpdates2, revert2)
+        const bidAskPoints = pointsFromBidAskUpdates(bidAskUpdates2, false)
         return bidAskPoints
-      }, [bidAskUpdates2, revert2])
+      }, [bidAskUpdates2])
 
-  const { yesPoints, noPoints } = useMemo<{
-    yesPoints: Point[],
-    noPoints: Point[]
-  }>(() => {
-    if (!kalshiTrades) {
-      return {
-        yesPoints: [],
-        noPoints: []
-      }
-    }
-    const ascTrades = [...kalshiTrades]
-    ascTrades.reverse()
-
-    return pointsFromKalshiTrades(ascTrades, false)
-  }, [kalshiTrades])
+  //const { yesPoints, noPoints } = useMemo<{
+  //  yesPoints: Point[],
+  //  noPoints: Point[]
+  //}>(() => {
+  //if (!kalshiTrades) {
+  //  return {
+  //    yesPoints: [],
+  //    noPoints: []
+  //  }
+  //}
+  //const ascTrades = [...kalshiTrades]
+  //ascTrades.reverse()
+  //
+  //return pointsFromKalshiTrades(ascTrades, false)
+  //}, [kalshiTrades])
 
   return <div className="flex flex-col items-center gap-10">
     <div className="flex gap-4">
@@ -163,18 +163,18 @@ const MarketChart2 = ({ revert1, revert2, marketID, market2ID }: MarketChartProp
 
         markerSets={
           [
-            {
-              name: "yes_kalshi_trades",
-              show: true,
-              color: "#ff00dd",
-              points: yesPoints
-            },
-            {
-              name: "no_kalshi_trades",
-              show: true,
-              color: "red",
-              points: noPoints
-            }
+            //{
+            //  name: "yes_kalshi_trades",
+            //  show: true,
+            //  color: "#ff00dd",
+            //  points: yesPoints
+            //},
+            //{
+            //  name: "no_kalshi_trades",
+            //  show: true,
+            //  color: "red",
+            //  points: noPoints
+            //}
           ]
         }
       />

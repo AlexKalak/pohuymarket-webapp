@@ -18,7 +18,7 @@ export class PolymarketMarketWhere {
 
 export type PolymarketMarketData = {
   type?: MarketType | string;
-  id?: number;
+  id?: string;
   conditionId?: string;
   event_id?: number;
   slug?: string;
@@ -102,7 +102,7 @@ export class PolymarketMarketModel implements IMarket {
     }
 
     this.type = type;
-    this.id = data.id;
+    this.id = Number(data.id);
     this.conditionId = data.conditionId;
     this.event_id = data.event_id;
     this.slug = data.slug;

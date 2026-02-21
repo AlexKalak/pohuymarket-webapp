@@ -1,20 +1,43 @@
 'use client'
 import { useCreateArbitragePairsMutation } from "@/src/common/api/arbitrage/hooks/useCreateArbitrageMutation"
 import { useLoadEventsMutation } from "@/src/common/api/events/hooks/useLoadEventsMutation"
+import { KalshiMarketModel } from "@/src/entities/market/kalshiMarket"
+import { MarketType } from "@/src/entities/market/market.interface"
+import { PolymarketMarketModel } from "@/src/entities/market/polymarketMarket"
+import { PredictFunMarketData, PredictFunMarketModel } from "@/src/entities/market/predictFunMarket"
 import { useCreateAritragePairState } from "@/src/stores/createArbitragePairs"
 import { useEffect, useState } from "react"
 
-const ArbitragePairCreator = () => {
-  const polymarketMarket = useCreateAritragePairState(s => s.polymarketMarket)
-  const kalshiMarket = useCreateAritragePairState(s => s.kalshiMarket)
+const getEventIdentificatorFromMarket = (market: PolymarketMarketModel | KalshiMarketModel | PredictFunMarketModel): {} => {
+  switch (market.GetMarketType()) {
+    case MarketType.Polymarket:
+      return {
+        slug: (market as PolymarketMarketModel).event_slug
+      }
+    case MarketType.Kalshi:
+      return {
+        ticker: (market as KalshiMarketModel).event_ticker
+      }
+    case MarketType.PredictFun:
+      return {
+        id: (market as PredictFunMarketModel).event_id
+      }
+  }
 
-  const setPolymarketMarket = useCreateAritragePairState(s => s.setPolymarketMarket)
-  const setKalshiMarket = useCreateAritragePairState(s => s.setKalshiMarket)
+}
+
+const ArbitragePairCreator = () => {
+  const market1 = useCreateAritragePairState(s => s.market1)
+  const market2 = useCreateAritragePairState(s => s.market2)
+
+  const setMarket1 = useCreateAritragePairState(s => s.setMarket1)
+  const setMarket2 = useCreateAritragePairState(s => s.setMarket2)
+
   const [revertPolymarket, setRevertPolymarket] = useState<boolean>(false)
   const [revertKalshi, setRevertKalshi] = useState<boolean>(false)
 
-  const deletePolymarketMarket = () => setPolymarketMarket(null)
-  const deleteKalshiMarket = () => setKalshiMarket(null)
+  const deletePolymarketMarket = () => setMarket1(null)
+  const deleteKalshiMarket = () => setMarket2(null)
   const [loadEvents, setLoadEvents] = useState<boolean>(false)
 
   const [createArbitragePair, { pairs, isLoading, error }] = useCreateArbitragePairsMutation()
@@ -25,32 +48,33 @@ const ArbitragePairCreator = () => {
     if (error) {
       console.log("error: ", error)
     }
-  }, [error, setKalshiMarket, setPolymarketMarket])
+  }, [error])
 
   useEffect(() => {
     if (pairs) {
-      setPolymarketMarket(null)
-      setKalshiMarket(null)
+      setMarket1(null)
+      setMarket2(null)
     }
   }, [pairs])
 
   const handleLoadEventsButtonClick = () => {
-    if (!polymarketMarket || !kalshiMarket) {
+    if (!market1 || !market2) {
       return
     }
 
-    console.log("POL: ", polymarketMarket)
-    console.log("KAL: ", kalshiMarket)
+    console.log("market1: ", market1)
+    console.log("market2: ", market2)
+
     loadEventsMutation({
       variables: {
         events: [
           {
-            type: "polymarket",
-            slug: polymarketMarket.event_slug
+            type: market1.GetMarketType(),
+            ...getEventIdentificatorFromMarket(market1)
           },
           {
-            type: "kalshi",
-            ticker: kalshiMarket.event_ticker
+            type: market2.GetMarketType(),
+            ...getEventIdentificatorFromMarket(market2)
           }
         ]
       }
@@ -58,7 +82,7 @@ const ArbitragePairCreator = () => {
   }
 
   const handleButtonClick = () => {
-    if (!polymarketMarket || !kalshiMarket) {
+    if (!market1 || !market2) {
       return
     }
 
@@ -67,9 +91,10 @@ const ArbitragePairCreator = () => {
         variables: {
           pairs: [
             {
-              revertPolymarket: revertPolymarket,
-              polymarketMarketID: polymarketMarket.id,
-              kalshiMarketTicker: kalshiMarket.ticker,
+              marketIdentificator1: market1.GetIdentificator(),
+              marketIdentificator2: market2.GetIdentificator(),
+              marketType1: market1.GetMarketType(),
+              marketType2: market2.GetMarketType(),
             }
           ]
         }
@@ -77,7 +102,7 @@ const ArbitragePairCreator = () => {
     )
   }
 
-  if (!polymarketMarket && !kalshiMarket) {
+  if (!market1 && !market2) {
     return <></>
   }
 
@@ -91,31 +116,31 @@ const ArbitragePairCreator = () => {
       }}
     >
       <div className="w-full flex gap-5">
-        {polymarketMarket &&
+        {market1 &&
           <div className="flex flex-col border border-white rounded-xl px-2 py-1">
-            <div>Polymarket</div>
+            <div>Market1</div>
             <div className="flex gap-1">
               <span>Revert</span>
               <input type="checkbox" onChange={() => setRevertPolymarket(prev => !prev)} checked={revertPolymarket} />
             </div>
-            <div>{polymarketMarket.id}</div>
-            <div>{polymarketMarket.GetQuestion()}</div>
+            <div>{market1.GetIdentificator()}</div>
+            <div>{market1.GetQuestion()}</div>
             <button onClick={deletePolymarketMarket} className="cursor-pointer bg-red-600">-</button>
           </div>
         }
-        {kalshiMarket &&
+        {market2 &&
           <div className="flex flex-col border border-white rounded-xl px-2 py-1">
-            <div>Kalshi</div>
+            <div>Market2</div>
             {/* <div className="flex gap-1"> */}
             {/* <span>Revert</span> */}
             {/* <input type="checkbox" onChange={() => setRevertKalshi(prev => !prev)} checked={revertKalshi} /> */}
             {/* </div> */}
-            <div>{kalshiMarket.ticker}</div>
-            <div>{kalshiMarket.GetQuestion()}</div>
+            <div>{market2.GetIdentificator()}</div>
+            <div>{market2.GetQuestion()}</div>
             <button onClick={deleteKalshiMarket} className="cursor-pointer bg-red-600">-</button>
           </div>
         }
-        {(polymarketMarket && kalshiMarket) &&
+        {(market1 && market2) &&
           <button
             onClick={handleButtonClick}
             className="bg-white text-black rounded-xl cursor-pointer px-4 py-2"
@@ -123,7 +148,7 @@ const ArbitragePairCreator = () => {
             +Create new pair
           </button>
         }
-        {(polymarketMarket && kalshiMarket) &&
+        {(market1 && market2) &&
           <button
             onClick={handleLoadEventsButtonClick}
             className="bg-white text-black rounded-xl cursor-pointer px-4 py-2"

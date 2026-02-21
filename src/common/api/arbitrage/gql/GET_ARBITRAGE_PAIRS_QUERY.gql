@@ -2,44 +2,132 @@ query ArbitragePairs($first: Int, $skip: Int, $where: ArbitragePairWhere) {
   arbitragePairs(first: $first, skip: $skip, where: $where) {
     createdAt
     id
-    kalshiMarket {
-      ticker
-      closeTime
-      closed
-      createdTime
-      event_ticker
-      marketType
-      subtitle
-      title
-      type
-      yesSubtitle
-      noSubtitle
-      custom
-    }
-    kalshiMarketTicker
-    polymarketMarket {
-      id
-      icon
-      event_id
-      endDate
-      conditionId
-      closed
-      active
-      image
-      negRisk
-      negRiskMarketID
-      negRiskRequestID
-      noAssetId
-      question
-      slug
-      startDate
-      type
-      yesAssetId
-    }
-    polymarketMarketID
-    revertPolymarket
+    marketIdentificator1
+    marketIdentificator2
+    marketType1
+    marketType2
     updatedAt
     allowTrading
+    market1 {
+      ... on KalshiMarket {
+        closeTime
+        closed
+        createdTime
+        custom
+        event_ticker
+        marketType
+        noSubtitle
+        subtitle
+        ticker
+        title
+        type
+        yesSubtitle
+      }
+      ... on PolymarketMarket {
+        id
+        event_id
+        active
+        closed
+        conditionId
+        endDate
+        icon
+        image
+        negRisk
+        negRiskMarketID
+        negRiskRequestID
+        noAssetId
+        question
+        slug
+        startDate
+        type
+        yesAssetId
+      }
+      ... on PredictFunMarket {
+        boostEndsAt
+        boostStartsAt
+        categorySlug
+        conditionId
+        createdAt
+        decimalPrecision
+        description
+        event_id
+        feeRateBps
+        id
+        imageUrl
+        isBoosted
+        isNegRisk
+        isYieldBearing
+        marketVariant
+        oracleQuestionId
+        polymarketConditionIds
+        question
+        resolverAddress
+        shareThreshold
+        spreadThreshold
+        status
+        title
+      }
+    }
+    market2 {
+      ... on KalshiMarket {
+        closeTime
+        closed
+        createdTime
+        custom
+        event_ticker
+        marketType
+        noSubtitle
+        subtitle
+        ticker
+        title
+        type
+        yesSubtitle
+      }
+      ... on PolymarketMarket {
+        id
+        event_id
+        active
+        closed
+        conditionId
+        endDate
+        icon
+        image
+        negRisk
+        negRiskMarketID
+        negRiskRequestID
+        noAssetId
+        question
+        slug
+        startDate
+        type
+        yesAssetId
+      }
+      ... on PredictFunMarket {
+        boostEndsAt
+        boostStartsAt
+        categorySlug
+        conditionId
+        createdAt
+        decimalPrecision
+        description
+        event_id
+        feeRateBps
+        id
+        imageUrl
+        isBoosted
+        isNegRisk
+        isYieldBearing
+        marketVariant
+        oracleQuestionId
+        polymarketConditionIds
+        question
+        resolverAddress
+        shareThreshold
+        spreadThreshold
+        status
+        title
+      }
+    }
   }
 }
 

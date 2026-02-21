@@ -42,8 +42,8 @@ const ArbitragePair = ({ pair }: ArbitragePairProps) => {
     })
   }
 
-  if (!pair.kalshiMarket || !pair.polymarketMarket) {
-    return <div>Not enough data {pair.id} {pair.polymarketMarketID} {pair.kalshiMarketTicker}</div>
+  if (!pair.market1 || !pair.market2) {
+    return <div>Not enough data {pair.id} {pair.market1?.GetIdentificator()} {pair.market2?.GetIdentificator()}</div>
   }
 
   const tradingAllowed = pair.allowTrading
@@ -54,25 +54,26 @@ const ArbitragePair = ({ pair }: ArbitragePairProps) => {
         <div>
           {pair.createdAt.toISOString()}
         </div>
-        <div>
+        <div className="flex gap-3">
           <Link className="text-blue-300 underline" target="_blank" href={`/arbitrages/${pair.id}`}>See graph</Link>
+          <Link className="text-blue-300 underline" target="_blank" href={`/arbitrages/${pair.id}/order-fills`}>Order fills</Link>
         </div>
       </div>
       <div className="flex gap-20 items-streched">
         <div className="flex flex-col gap-3">
           <div>
-            {pair.polymarketMarket.id}
+            {pair.market1.GetIdentificator()}
           </div>
           <div>
-            {pair.polymarketMarket.GetQuestion()}
+            {pair.market1.GetQuestion()}
           </div>
         </div>
         <div className="flex flex-col gap-3">
           <div>
-            {pair.kalshiMarket.ticker}
+            {pair.market2.GetIdentificator()}
           </div>
           <div>
-            {pair.kalshiMarket.GetQuestion()}
+            {pair.market2.GetQuestion()}
           </div>
         </div>
         <div className="flex flex-col gap-2 items-center">

@@ -52,5 +52,47 @@ query EVENTS_BY_TEXT($first: Int, $text: String) {
       startDate
       title
     }
+    predictFun {
+      categorySlug
+      conditionId
+      createdAt
+      description
+      id
+      imageUrl
+      isNegRisk
+      question
+      status
+      title
+      markets {
+        boostEndsAt
+        boostStartsAt
+        categorySlug
+        conditionId
+        createdAt
+        decimalPrecision
+        description
+        event_id
+        feeRateBps
+        id
+        imageUrl
+        isBoosted
+        isNegRisk
+        isYieldBearing
+        marketVariant
+        oracleQuestionId
+        outcomes {
+          indexSet
+          name
+          onChainId
+          status
+        }
+        question
+        resolverAddress
+        shareThreshold
+        spreadThreshold
+        status
+        title
+      }
+    }
   }
 }
