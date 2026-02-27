@@ -75,9 +75,11 @@ export class ArbitragePairModel {
     }
 
     if (data.market1) {
+      console.log(data.market1)
       this.market1 = modelFromPolymorphicModelData(data.market1, data.marketType1)
     }
     if (data.market2) {
+      console.log(data.market2)
       this.market2 = modelFromPolymorphicModelData(data.market2, data.marketType2)
     }
   }

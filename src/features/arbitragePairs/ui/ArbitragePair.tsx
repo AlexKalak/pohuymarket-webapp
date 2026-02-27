@@ -1,8 +1,22 @@
 import { useDeleteArbitragesMutation } from "@/src/common/api/arbitrage/hooks/useDeleteArbitragesMutation"
 import { useSetAllowTradingMutation } from "@/src/common/api/arbitrage/hooks/useSetAllowTradingMutation"
 import { ArbitragePairModel } from "@/src/entities/arbitrage/arbitragePairsModel"
+import { KalshiMarketModel } from "@/src/entities/market/kalshiMarket"
+import { MarketType, PolymorphicMarketData, PolymorphicMarketModel } from "@/src/entities/market/market.interface"
+import { PolymarketMarketModel } from "@/src/entities/market/polymarketMarket"
 import Link from "next/link"
 import { useEffect } from "react"
+
+function getMarketEventLink(market: PolymorphicMarketModel): string {
+  switch (market.GetMarketType()) {
+    case MarketType.Polymarket:
+      return `https://polymarket.com/event/${(market as PolymarketMarketModel).event_slug}`
+    case MarketType.Kalshi:
+      return `https://kalshi.com/markets/${(market as KalshiMarketModel).event_ticker}`
+  }
+  return `not found link`
+
+}
 
 type ArbitragePairProps = {
   pair: ArbitragePairModel
@@ -61,6 +75,9 @@ const ArbitragePair = ({ pair }: ArbitragePairProps) => {
       </div>
       <div className="flex gap-20 items-streched">
         <div className="flex flex-col gap-3">
+          <a className="text-blue-300 underline" href={getMarketEventLink(pair.market1)}>
+            go to site
+          </a>
           <div>
             {pair.market1.GetIdentificator()}
           </div>
@@ -69,6 +86,9 @@ const ArbitragePair = ({ pair }: ArbitragePairProps) => {
           </div>
         </div>
         <div className="flex flex-col gap-3">
+          <a className="text-blue-300 underline" href={getMarketEventLink(pair.market2)}>
+            go to site
+          </a>
           <div>
             {pair.market2.GetIdentificator()}
           </div>

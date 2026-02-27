@@ -13,7 +13,7 @@ const MarketsSearchBarFeature = () => {
   console.log("Predict fun events: ", predictFunEvents)
 
   const [firstColMarketType, setFirstColMarketType] = useState<MarketType>(MarketType.Polymarket)
-  const [secondColMarketType, setSecondColMarketType] = useState<MarketType>(MarketType.PredictFun)
+  const [secondColMarketType, setSecondColMarketType] = useState<MarketType>(MarketType.Kalshi)
 
   let firstColumnEvents
   switch (firstColMarketType) {
