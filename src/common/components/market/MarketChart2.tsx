@@ -19,7 +19,7 @@ const MarketChart2 = ({ marketType1, marketType2, marketIdentificator1, marketId
   const { bidAskUpdates, error, isLoading } = useBidAskUpdateSubscription(marketIdentificator1, 10000)
   const { bidAskUpdates: bidAskUpdates2, error: error2, isLoading: isLoading2 } = useBidAskUpdateSubscription(marketIdentificator2, 10000)
 
-  //const { trades: kalshiTrades } = useKalshiTradesForMarket(market2ID)
+  const { trades: kalshiTrades } = useKalshiTradesForMarket(marketIdentificator2)
 
   const [showBid1, setShowBid1] = useState<boolean>(true)
   const [showAsk1, setShowAsk1] = useState<boolean>(true)
@@ -40,21 +40,21 @@ const MarketChart2 = ({ marketType1, marketType2, marketIdentificator1, marketId
         return bidAskPoints
       }, [bidAskUpdates2])
 
-  //const { yesPoints, noPoints } = useMemo<{
-  //  yesPoints: Point[],
-  //  noPoints: Point[]
-  //}>(() => {
-  //if (!kalshiTrades) {
-  //  return {
-  //    yesPoints: [],
-  //    noPoints: []
-  //  }
-  //}
-  //const ascTrades = [...kalshiTrades]
-  //ascTrades.reverse()
-  //
-  //return pointsFromKalshiTrades(ascTrades, false)
-  //}, [kalshiTrades])
+  const { yesPoints, noPoints } = useMemo<{
+    yesPoints: Point[],
+    noPoints: Point[]
+  }>(() => {
+    if (!kalshiTrades) {
+      return {
+        yesPoints: [],
+        noPoints: []
+      }
+    }
+    const ascTrades = [...kalshiTrades]
+    ascTrades.reverse()
+
+    return pointsFromKalshiTrades(ascTrades, false)
+  }, [kalshiTrades])
 
   return <div className="flex flex-col items-center gap-10">
     <div className="flex gap-4">
@@ -163,21 +163,30 @@ const MarketChart2 = ({ marketType1, marketType2, marketIdentificator1, marketId
 
         markerSets={
           [
-            //{
-            //  name: "yes_kalshi_trades",
-            //  show: true,
-            //  color: "#ff00dd",
-            //  points: yesPoints
-            //},
-            //{
-            //  name: "no_kalshi_trades",
-            //  show: true,
-            //  color: "red",
-            //  points: noPoints
-            //}
+            {
+              name: "yes_kalshi_trades",
+              show: true,
+              color: "#ff00dd",
+              points: yesPoints
+            },
+            {
+              name: "no_kalshi_trades",
+              show: true,
+              color: "red",
+              points: noPoints
+            }
           ]
         }
       />
+    </div>
+
+    <div>
+      {kalshiTrades?.map(trade => <div className="flex gap-2">
+        <span>{trade.taker_side}</span>
+        <span>{Math.ceil(Number(trade.count_fp))} shares</span>
+        <span>{trade.taker_side === "yes" ? Number(trade.yes_price_dollars).toFixed(2) : Number(trade.no_price_dollars).toFixed(2)}$</span>
+        <span>{trade.created_time}$</span>
+      </div>)}
     </div>
   </div>
 
